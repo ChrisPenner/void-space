@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: bebbdfdbb73c293e5cb704ed7efb7d27f2cc3c12ae1d47d37640a63a0f7cc2f0
+-- hash: b5c705ed8999fb61c35717cb7cf7651ee08f0224b62a36af9d83f05957e8ec50
 
 name:           void-space
 version:        0.1.0.0
@@ -38,6 +38,7 @@ library
     , containers
     , lens
     , mtl
+    , random
     , text
     , vty
   default-language: Haskell2010
@@ -50,6 +51,7 @@ executable void-space-exe
       Dashboard
       GameState
       Render
+      Stars
       Paths_void_space
   hs-source-dirs:
       app
@@ -60,6 +62,7 @@ executable void-space-exe
     , containers
     , lens
     , mtl
+    , random
     , text
     , void-space
     , vty
@@ -79,6 +82,7 @@ test-suite void-space-test
     , containers
     , lens
     , mtl
+    , random
     , text
     , void-space
     , vty

@@ -27,6 +27,7 @@ dependencies:
 - mtl
 - lens
 - text
+- random
 
 library:
   source-dirs: src

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module App where
 
 import Brick
@@ -7,6 +8,7 @@ import Data.Void
 import GameState
 import Dashboard
 import Render
+import Stars
 import Attrs
 import Brick.Widgets.Center
 
@@ -24,7 +26,7 @@ app = App
 
 
 draw :: GameState -> [Widget n]
-draw GameState = [hCenter ship <=> dashboard]
+draw GameState = [stars, hCenter ship <=> dashboard]
 
 chooseCursor
   :: GameState
