@@ -1,3 +1,3 @@
-# Changelog for void
+# Changelog for void space
 
 ## Unreleased changes
