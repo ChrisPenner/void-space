@@ -26,7 +26,8 @@ app = App
 
 
 draw :: GameState -> [Widget n]
-draw GameState = [stars, hCenter ship <=> dashboard]
+draw GameState =
+  [hCenterLayer (txt "VOIDSPACE"), centerLayer ship, stars <=> dashboard, stars]
 
 chooseCursor
   :: GameState

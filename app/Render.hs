@@ -2,6 +2,7 @@
 
 module Render where
 
+import Data.Monoid
 import Brick
 import qualified Data.Text as T
 
@@ -15,9 +16,11 @@ import qualified Data.Text as T
 
 
 ship :: Widget n
-ship =
-  txt
-    "\
+ship = txt shipText
+
+shipText :: T.Text
+shipText
+  = "\
 \        //-A-\\\\\n\
 \  ___---=======---___\n\
 \(=__\\   /.. ..\\   /__=)\n\
