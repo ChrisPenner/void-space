@@ -41,3 +41,4 @@ handleEvent
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) =
   continue $ over wordState (typeKey c) s
+handleEvent s _ = continue s

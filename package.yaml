@@ -28,6 +28,7 @@ dependencies:
 - lens
 - text
 - random
+- streams
 
 library:
   source-dirs: src
