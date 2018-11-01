@@ -4,13 +4,16 @@ module App where
 import Brick
 import Graphics.Vty.Attributes
 import Data.Void
+import Graphics.Vty.Input.Events
 
+import Words
 import GameState
 import Dashboard
 import Render
 import Stars
 import Attrs
 import Brick.Widgets.Center
+import Control.Lens
 
 type ResourceName = Void
 type CustomEvent = Void
@@ -35,4 +38,6 @@ handleEvent
   :: GameState
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next GameState)
-handleEvent s _ = halt s
+handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
+handleEvent s (VtyEvent (EvKey (KChar c) _)) =
+  continue $ over wordState (typeKey c) s

@@ -2,11 +2,13 @@
 
 module Render where
 
+import Control.Lens
 import Data.Monoid
 import Brick
 import Brick.Widgets.Core
 import Brick.Widgets.Border
 import Brick.Widgets.Center
+import Words
 import Dashboard
 import qualified Data.Text as T
 import Stars
@@ -14,7 +16,12 @@ import GameState
 
 
 drawGame :: GameState -> [Widget n]
-drawGame GameState = [header, centerLayer ship, stars <=> dashboard, stars]
+drawGame s =
+  [ header
+  , wordWidget (s ^. wordState) <+> centerLayer ship
+  , stars <=> dashboard
+  , stars
+  ]
 
 header :: Widget n
 header = hCenterLayer (txt "VOIDSPACE")

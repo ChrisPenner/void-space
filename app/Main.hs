@@ -8,4 +8,4 @@ import GameState
 import App
 
 main :: IO ()
-main = void $ defaultMain app GameState
+main = void $ defaultMain app gameStart
