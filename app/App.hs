@@ -5,7 +5,10 @@ import Graphics.Vty.Attributes
 import Data.Void
 
 import GameState
+import Dashboard
 import Render
+import Attrs
+import Brick.Widgets.Center
 
 type ResourceName = Void
 type CustomEvent = Void
@@ -21,7 +24,7 @@ app = App
 
 
 draw :: GameState -> [Widget n]
-draw GameState = [ship]
+draw GameState = [hCenter ship <=> dashboard]
 
 chooseCursor
   :: GameState
@@ -34,9 +37,3 @@ handleEvent
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next GameState)
 handleEvent s _ = halt s
-
-attrs :: AttrMap
-attrs =
-  let def      = defAttr
-      mappings = []
-  in  attrMap def mappings

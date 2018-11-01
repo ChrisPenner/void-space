@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 188b10e521f8971faee36229e356c66fc818a93473fdcd80bc001a7aa9881a66
+-- hash: bebbdfdbb73c293e5cb704ed7efb7d27f2cc3c12ae1d47d37640a63a0f7cc2f0
 
 name:           void-space
 version:        0.1.0.0
@@ -46,6 +46,8 @@ executable void-space-exe
   main-is: Main.hs
   other-modules:
       App
+      Attrs
+      Dashboard
       GameState
       Render
       Paths_void_space
