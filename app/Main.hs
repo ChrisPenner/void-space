@@ -1,6 +1,11 @@
 module Main where
 
 import Lib
+import Brick
+import Control.Monad
+
+import GameState
+import App
 
 main :: IO ()
-main = someFunc
+main = void $ defaultMain app GameState

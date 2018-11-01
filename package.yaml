@@ -22,9 +22,11 @@ description:         Please see the README on GitHub at <https://github.com/Chri
 dependencies:
 - base >= 4.7 && < 5
 - brick
+- vty
 - containers
 - mtl
 - lens
+- text
 
 library:
   source-dirs: src
