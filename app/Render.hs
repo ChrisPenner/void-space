@@ -4,15 +4,20 @@ module Render where
 
 import Data.Monoid
 import Brick
+import Brick.Widgets.Core
+import Brick.Widgets.Border
+import Brick.Widgets.Center
+import Dashboard
 import qualified Data.Text as T
+import Stars
+import GameState
 
--- ship :: Widget n
--- ship = txt "\
--- \   /\\\n\
--- \  (  )\n\
--- \  (  )\n\
--- \ /|/\\|\\\n\
--- \/_||||_\\\n"
+
+drawGame :: GameState -> [Widget n]
+drawGame GameState = [header, centerLayer ship, stars <=> dashboard, stars]
+
+header :: Widget n
+header = hCenterLayer (txt "VOIDSPACE")
 
 
 ship :: Widget n
@@ -31,3 +36,11 @@ shipText
 --  ___---=======---___
 --(=__\   /.. ..\   /__=)
 --     ---\__O__/---
+
+-- ship :: Widget n
+-- ship = txt "\
+-- \   /\\\n\
+-- \  8  8\n\
+-- \  8  8\n\
+-- \ /|/\\|\\\n\
+-- \/_||||_\\\n"

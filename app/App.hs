@@ -17,17 +17,13 @@ type CustomEvent = Void
 
 app :: App GameState CustomEvent ResourceName
 app = App
-  { appDraw         = draw
+  { appDraw         = drawGame
   , appChooseCursor = chooseCursor
   , appHandleEvent  = handleEvent
   , appStartEvent   = pure
   , appAttrMap      = const attrs
   }
 
-
-draw :: GameState -> [Widget n]
-draw GameState =
-  [hCenterLayer (txt "VOIDSPACE"), centerLayer ship, stars <=> dashboard, stars]
 
 chooseCursor
   :: GameState
