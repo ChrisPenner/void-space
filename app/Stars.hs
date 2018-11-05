@@ -18,17 +18,18 @@ renderStars = do
   render $ txt $ genStars width height
 
 genStars :: Int -> Int -> T.Text
-genStars width height = stars
+genStars width height =
+  T.unlines
+    . T.chunksOf width
+    . T.pack
+    . take (width * height)
+    $ infiniteStarField
+
+infiniteStarField :: String
+infiniteStarField = toStar <$> probabilities
  where
   probabilities :: [Float]
   probabilities = randomRs (0, 1) (mkStdGen 42)
-  stars =
-    T.unlines
-      . T.chunksOf width
-      . T.pack
-      . fmap toStar
-      . take (width * height)
-      $ probabilities
   toStar r | r < 0.002 = '*'
            | r < 0.025 = '.'
            | otherwise = ' '

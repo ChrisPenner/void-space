@@ -40,5 +40,5 @@ handleEvent
   -> EventM ResourceName (Next GameState)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) =
-  continue $ over wordState (typeKey c) s
+  continue $ s &~ zoom wordState (typeKey c)
 handleEvent s _ = continue s

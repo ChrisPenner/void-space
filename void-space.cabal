@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f0d4c1350404fc2ef7638b3a7fa973fc3176b17f150f82cfac2288a693d6f50f
+-- hash: 5411f8801609e342ce7b14de7f01fb47eb4d894d287cd44a7fdf9f24f75e82b8
 
 name:           void-space
 version:        0.1.0.0
@@ -33,12 +33,16 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      adjunctions
+    , base >=4.7 && <5
     , brick
+    , comonad
     , containers
+    , distributive
     , lens
     , mtl
     , random
+    , selections
     , streams
     , text
     , vty
@@ -59,12 +63,16 @@ executable void-space-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      adjunctions
+    , base >=4.7 && <5
     , brick
+    , comonad
     , containers
+    , distributive
     , lens
     , mtl
     , random
+    , selections
     , streams
     , text
     , void-space
@@ -80,12 +88,16 @@ test-suite void-space-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      adjunctions
+    , base >=4.7 && <5
     , brick
+    , comonad
     , containers
+    , distributive
     , lens
     , mtl
     , random
+    , selections
     , streams
     , text
     , void-space

@@ -29,6 +29,10 @@ dependencies:
 - text
 - random
 - streams
+- adjunctions
+- distributive
+- selections
+- comonad
 
 library:
   source-dirs: src

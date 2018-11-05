@@ -5,8 +5,6 @@ import Brick
 import Graphics.Vty.Attributes
 import Brick.Widgets.ProgressBar
 
-data AttrTypes = Health | Shields
-
 healthAttr :: AttrName
 healthAttr = "health"
 
