@@ -2,26 +2,35 @@
 
 module Render where
 
-import Control.Lens
-import Data.Monoid
-import Brick
-import Brick.Widgets.Core
-import Brick.Widgets.Border
-import Brick.Widgets.Center
-import Words
-import Dashboard
-import qualified Data.Text as T
-import Stars
-import GameState
+import           Control.Lens
+import           Data.Monoid
+import           Brick
+import           Brick.Widgets.Core
+import           Brick.Widgets.Border
+import           Brick.Widgets.Center
+import           Words
+import           Dashboard
+import qualified Data.Text                     as T
+import           Stars
+import           GameState
 
 
 drawGame :: GameState -> [Widget n]
 drawGame s =
   [ header
-  , wordWidget (s ^. wordState) <+> centerLayer ship
+  , centerLayer (shipWithWords (s ^. wordState))
   , stars <=> dashboard
   , stars
   ]
+
+shipWithWords :: WordState -> Widget n
+shipWithWords ws =
+  padAll 4 (mkWordWidget L ws)
+    <+> (   (padBottom (Pad 1) . padLeft (Pad 5) $ mkWordWidget U ws)
+        <=> ship
+        <=> (padTop (Pad 1) . padLeft (Pad 5) $ mkWordWidget D ws)
+        )
+    <+> padAll 4 (mkWordWidget R ws)
 
 header :: Widget n
 header = hCenterLayer (txt "VOIDSPACE")

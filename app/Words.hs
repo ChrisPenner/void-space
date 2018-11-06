@@ -7,6 +7,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Words where
 
@@ -14,7 +15,7 @@ import           Brick
 import           Brick.Markup
 import qualified Data.Text                     as T
 import qualified Data.List.NonEmpty            as NE
-import           Control.Lens as L
+import           Control.Lens                  as L
 import qualified Data.Stream.Infinite          as S
 import           Control.Comonad.Representable.Store
 import           Data.Functor.Rep
@@ -29,10 +30,11 @@ import           Attrs
 
 data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
 makeLenses ''FocusedWord
-data WordSections a = WordSections {_missiles :: a, _shields :: a } deriving (Functor, Foldable, Traversable)
+data WordSections a = WordSections {_left :: a, _right :: a, _up :: a, _down :: a }
+  deriving (Functor, Foldable, Traversable)
 makeLenses ''WordSections
 
-data Section = Missiles | Shields deriving (Eq, Show)
+data Section = U | D | L | R deriving (Eq, Show)
 
 instance FunctorWithIndex Section WordSections where
   imap = imapRep
@@ -50,10 +52,12 @@ instance Distributive WordSections where
 
 instance Representable WordSections where
   type Rep WordSections = Section
-  index w Missiles = w^.missiles
-  index w Shields = w^.shields
+  index w U = w^.up
+  index w D = w^.down
+  index w L = w^.left
+  index w R = w^.right
 
-  tabulate f = WordSections{_missiles=f Missiles, _shields=f Shields}
+  tabulate f = WordSections{_up=f U, _down=f D, _left=f L, _right=f R}
 
 data WordState = WordState
   { _sections :: WordSections T.Text
@@ -63,16 +67,28 @@ data WordState = WordState
 makeLenses ''WordState
 
 wordStart :: S.Stream T.Text -> WordState
-wordStart (shieldWord S.:> missilesWord S.:> wordSupply) = WordState
-  { _sections = WordSections {_missiles = missilesWord, _shields = shieldWord}
-  , _focused  = Nothing
-  , _wordList = wordSupply
-  }
+wordStart (upWord S.:> downWord S.:> leftWord S.:> rightWord S.:> wordSupply) =
+  WordState
+    { _sections = WordSections
+      { _up    = upWord
+      , _down  = downWord
+      , _left  = leftWord
+      , _right = rightWord
+      }
+    , _focused  = Nothing
+    , _wordList = wordSupply
+    }
 
-wordWidget :: WordState -> Widget n
-wordWidget (view focused -> Just fw) =
+-- wordWidget :: WordState -> Widget n
+-- wordWidget (view focused -> Just fw) =
+--   markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
+-- wordWidget w = txt . T.unlines $ (w ^.. sections . folded)
+
+mkWordWidget :: Section -> WordState -> Widget n
+mkWordWidget _ (view focused -> Just fw) =
   markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
-wordWidget w = txt . T.unlines $ (w ^.. sections . folded)
+mkWordWidget ind w = txt (w ^. sections . itraversed . L.index ind)
+
 
 tryType :: Char -> FocusedWord -> FocusedWord
 tryType c w@(view untyped -> T.uncons -> Just (h, rest)) | h == c =
@@ -83,7 +99,11 @@ typeKey :: Char -> State WordState ()
 typeKey c = do
   mFocused <- use focused
   case mFocused of
-    Just fw -> focused . _Just .= tryType c fw
+    Just fw -> do
+      focused . _Just .= tryType c fw
+      focused %= \case
+        Just (view untyped -> "") -> Nothing
+        fw                        -> fw
     Nothing -> startWord c
 
 startWord :: Char -> State WordState ()
