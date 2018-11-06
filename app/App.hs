@@ -5,6 +5,7 @@ import Brick
 import Graphics.Vty.Attributes
 import Data.Void
 import Graphics.Vty.Input.Events
+import Control.Monad.State
 
 import Words
 import GameState
@@ -14,6 +15,7 @@ import Stars
 import Attrs
 import Brick.Widgets.Center
 import Control.Lens
+import Enemies
 
 type ResourceName = Void
 type CustomEvent = Void
@@ -39,6 +41,7 @@ handleEvent
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next GameState)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
-handleEvent s (VtyEvent (EvKey (KChar c) _)) =
-  continue $ s &~ zoom wordState (typeKey c)
+handleEvent s (VtyEvent (EvKey (KChar c) _)) = continue $ flip execState s $ do
+  zoom wordState    (typeKey c)
+  zoom enemiesState stepEnemies
 handleEvent s _ = continue s

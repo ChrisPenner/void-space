@@ -23,13 +23,18 @@ genStars width height =
     . T.chunksOf width
     . T.pack
     . take (width * height)
-    $ infiniteStarField
+    $ backgroundStars
 
-infiniteStarField :: String
-infiniteStarField = toStar <$> probabilities
+
+-- | Memoize the the background one for performance reasons
+backgroundStars :: String
+backgroundStars = infiniteStarField 42
+
+infiniteStarField :: Int -> String
+infiniteStarField seed = toStar <$> probabilities
  where
   probabilities :: [Float]
-  probabilities = randomRs (0, 1) (mkStdGen 42)
+  probabilities = randomRs (0, 1) (mkStdGen seed)
   toStar r | r < 0.002 = '*'
            | r < 0.025 = '.'
            | otherwise = ' '
