@@ -42,6 +42,5 @@ handleEvent
   -> EventM ResourceName (Next GameState)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) = continue $ flip execState s $ do
-  zoom wordState    (typeKey c)
   zoom enemiesState stepEnemies
 handleEvent s _ = continue s
