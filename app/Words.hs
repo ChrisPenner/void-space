@@ -27,23 +27,36 @@ import           Data.Functor.Selection
 import           Control.Monad.State
 import           Data.Monoid
 import           Control.Comonad
-import GameState
-import Enemies
+import           Attrs
+
+data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
+makeLenses ''FocusedWord
+
+type WordT = Either T.Text FocusedWord
+
+class HasWords s where
+  eachWord :: Traversal' s WordT
+
+class HasWordStream s where
+  wordStream :: Lens' s (S.Stream T.Text)
+
+focusedWordWidget :: FocusedWord -> Widget n
+focusedWordWidget fw =
+  markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
 
 
-typeChar :: MonadState GameState m => Char -> m ()
+typeChar :: (HasWords s, HasWordStream s, MonadState s m) => Char -> m ()
 typeChar c = do
-  result <- gets (failover (enemies . traversed . word . _Right) (tryType c))
+  result <- gets (failover (eachWord . _Right) (tryType c))
   case result of
     Just newEnemies -> put newEnemies >> refreshWords
     Nothing         -> startWord c
 
-startWord :: (HasEnemyState s, MonadState s m) => Char -> m ()
+startWord :: (HasWords s, MonadState s m) => Char -> m ()
 startWord (T.singleton -> c) = do
   let doesMatch (Left  txt) = c `T.isPrefixOf` txt
       doesMatch (Right _  ) = False
-  match <- gets
-    $ failover (enemies . traversed . word . filtered doesMatch) startTyping
+  match <- gets $ failover (eachWord . filtered doesMatch) startTyping
   case match of
     Just w  -> put w
     Nothing -> pure ()
@@ -53,7 +66,7 @@ startTyping x@(Left (T.uncons -> Just (c, rest))) =
   Right (FocusedWord (T.singleton c) rest)
 startTyping x = x
 
-getWord :: MonadState GameState m => m T.Text
+getWord :: (HasWords s, HasWordStream s, MonadState s m) => m T.Text
 getWord = do
   (a S.:> as) <- use wordStream
   wordStream .= as
@@ -64,9 +77,10 @@ tryType c w@(view untyped -> T.uncons -> Just (h, rest)) | h == c =
   ((w & typed %~ (|> h) & untyped %~ T.tail))
 tryType _ w = w
 
-refreshWords :: forall m . MonadState GameState m => m ()
+refreshWords
+  :: forall m s . (HasWords s, HasWordStream s, MonadState s m) => m ()
 refreshWords = do
-  newState      <- get >>= (enemies . traversed . word %%~ setNewWord)
+  newState      <- get >>= (eachWord %%~ setNewWord)
   newWordStream <- use wordStream
   put (newState & wordStream .~ newWordStream)
  where

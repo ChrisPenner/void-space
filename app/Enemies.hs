@@ -19,13 +19,7 @@ import Control.Lens.Selection
 import Data.Coerce
 import Control.Monad.Supply
 import           Attrs
-
-data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
-makeLenses ''FocusedWord
-
-focusedWordWidget :: FocusedWord -> Widget n
-focusedWordWidget fw =
-  markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
+import Words
 
 data Enemy a = Enemy
   {_distance :: Int
@@ -39,6 +33,9 @@ data EnemyState = EnemyState
   }
 
 makeClassy ''EnemyState
+
+instance HasWords EnemyState where
+  eachWord = enemies . traversed . word
 
 enemiesStart :: EnemyState
 enemiesStart = EnemyState
