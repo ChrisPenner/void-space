@@ -20,7 +20,7 @@ import Control.Lens
 import Enemies
 
 type ResourceName = Void
-type CustomEvent = Void
+type CustomEvent = ()
 
 app :: App GameState CustomEvent ResourceName
 app = App
@@ -42,9 +42,8 @@ handleEvent
   :: GameState
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next GameState)
+handleEvent s (AppEvent ()) = continue (s &~ stepEnemies)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
-handleEvent s (VtyEvent (EvKey (KChar c  ) _      )) = continue $ do
-  flip execState s $ do
-    typeChar c
-    stepEnemies
+handleEvent s (VtyEvent (EvKey (KChar c) _)) =
+  continue . flip execState s $ typeChar c
 handleEvent s _ = continue s

@@ -49,6 +49,7 @@ executables:
     dependencies:
     - void-space
     - streams
+    - async
 
 tests:
   void-space-test:

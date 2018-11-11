@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 830032f57a69d0b17b7ba39d34569ef3d0651de0e2cc81b183e11753653f8eab
+-- hash: 61509036aa9f95ffc3b2105d8cd47ee9c88c33a2c987d9411b044eea261437ba
 
 name:           void-space
 version:        0.1.0.0
@@ -66,6 +66,7 @@ executable void-space-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       adjunctions
+    , async
     , base >=4.7 && <5
     , brick
     , comonad
