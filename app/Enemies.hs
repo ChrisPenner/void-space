@@ -6,6 +6,7 @@
 {-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Enemies where
 
 import Control.Lens
@@ -28,7 +29,7 @@ data Enemy a = Enemy
 
 makeLenses ''Enemy
 
-data EnemyState = EnemyState
+newtype EnemyState = EnemyState
   { _enemies :: [Enemy (Either T.Text FocusedWord)]
   }
 
@@ -37,15 +38,17 @@ makeClassy ''EnemyState
 instance HasWords EnemyState where
   eachWord = enemies . traversed . word
 
-enemiesStart :: EnemyState
-enemiesStart = EnemyState
-  [ Enemy 15 (Left "hi")
-  , Enemy 20 (Left "hello")
-  , Enemy 30 (Left "hello")
-  , Enemy 40 (Left "hello")
-  , Enemy 50 (Left "hello")
-  ]
+enemiesStart :: [T.Text] -> EnemyState
+enemiesStart startWords = EnemyState
+  (startWords ^.. traversed . withIndex . to
+    (\(i, w) -> Enemy ((i * 10) + 10) (Left w))
+  )
 
 stepEnemies :: (HasEnemyState s, MonadState s m) => m ()
-stepEnemies = do
-  enemies . traverse . distance -= 1
+stepEnemies = enemies . traverse . distance -= 1
+
+killEnemies :: forall m s . (HasEnemyState s, MonadState s m) => m ()
+killEnemies = enemies %= toListOf (traversed . filtered alive)
+ where
+  alive :: Enemy WordT -> Bool
+  alive = has $ word . choosing id (untyped . filtered (not . T.null))

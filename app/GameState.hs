@@ -24,8 +24,8 @@ instance HasEnemyState GameState where
   enemyState = enemiesState
 
 gameStart :: S.Stream T.Text -> Ship -> GameState
-gameStart aWordStream aShip = GameState
-  { _enemiesState = enemiesStart
+gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
+  { _enemiesState = enemiesStart startWords
   , _ship         = aShip
   , _wordStream'  = aWordStream
   }

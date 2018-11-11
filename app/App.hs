@@ -45,5 +45,5 @@ handleEvent
 handleEvent s (AppEvent ()) = continue (s &~ stepEnemies)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) =
-  continue . flip execState s $ typeChar c
+  continue $ s &~ typeChar c &~ killEnemies
 handleEvent s _ = continue s

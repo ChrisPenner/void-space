@@ -49,7 +49,7 @@ typeChar :: (HasWords s, HasWordStream s, MonadState s m) => Char -> m ()
 typeChar c = do
   result <- gets (failover (eachWord . _Right) (tryType c))
   case result of
-    Just newEnemies -> put newEnemies >> refreshWords
+    Just newEnemies -> put newEnemies
     Nothing         -> startWord c
 
 startWord :: (HasWords s, MonadState s m) => Char -> m ()
@@ -66,7 +66,7 @@ startTyping x@(Left (T.uncons -> Just (c, rest))) =
   Right (FocusedWord (T.singleton c) rest)
 startTyping x = x
 
-getWord :: (HasWords s, HasWordStream s, MonadState s m) => m T.Text
+getWord :: (HasWordStream s, MonadState s m) => m T.Text
 getWord = do
   (a S.:> as) <- use wordStream
   wordStream .= as
@@ -76,14 +76,3 @@ tryType :: Char -> FocusedWord -> FocusedWord
 tryType c w@(view untyped -> T.uncons -> Just (h, rest)) | h == c =
   ((w & typed %~ (|> h) & untyped %~ T.tail))
 tryType _ w = w
-
-refreshWords
-  :: forall m s . (HasWords s, HasWordStream s, MonadState s m) => m ()
-refreshWords = do
-  newState      <- get >>= (eachWord %%~ setNewWord)
-  newWordStream <- use wordStream
-  put (newState & wordStream .~ newWordStream)
- where
-  setNewWord :: Either T.Text FocusedWord -> m (Either T.Text FocusedWord)
-  setNewWord (Right (FocusedWord _ "")) = Left <$> getWord
-  setNewWord x                          = pure x
