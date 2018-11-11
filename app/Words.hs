@@ -8,6 +8,8 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Words where
 
@@ -25,55 +27,46 @@ import           Data.Functor.Selection
 import           Control.Monad.State
 import           Data.Monoid
 import           Control.Comonad
-
-import           Attrs
-
-data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
-makeLenses ''FocusedWord
-
-data WordState = WordState
-  { _focused :: Maybe FocusedWord
-  , _wordList :: S.Stream T.Text
-  }
-makeLenses ''WordState
-
-wordStart :: S.Stream T.Text -> WordState
-wordStart (upWord S.:> downWord S.:> leftWord S.:> rightWord S.:> wordSupply) =
-  WordState {_focused = Nothing, _wordList = wordSupply}
-
--- wordWidget :: WordState -> Widget n
--- wordWidget (view focused -> Just fw) =
---   markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
--- wordWidget w = txt . T.unlines $ (w ^.. sections . folded)
+import GameState
+import Enemies
 
 
-focusedWordWidget :: FocusedWord -> Widget n
-focusedWordWidget fw =
-  markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
+typeChar :: MonadState GameState m => Char -> m ()
+typeChar c = do
+  result <- gets (failover (enemies . traversed . word . _Right) (tryType c))
+  case result of
+    Just newEnemies -> put newEnemies >> refreshWords
+    Nothing         -> startWord c
+
+startWord :: (HasEnemyState s, MonadState s m) => Char -> m ()
+startWord (T.singleton -> c) = do
+  let doesMatch (Left  txt) = c `T.isPrefixOf` txt
+      doesMatch (Right _  ) = False
+  match <- gets
+    $ failover (enemies . traversed . word . filtered doesMatch) startTyping
+  case match of
+    Just w  -> put w
+    Nothing -> pure ()
+
+startTyping :: Either T.Text FocusedWord -> Either T.Text FocusedWord
+startTyping x@(Left (T.uncons -> Just (c, rest))) =
+  Right (FocusedWord (T.singleton c) rest)
+startTyping x = x
+
+getWord :: MonadState GameState m => m T.Text
+getWord = do
+  (a S.:> as) <- use wordStream
+  wordStream .= as
+  return a
 
 tryType :: Char -> FocusedWord -> FocusedWord
 tryType c w@(view untyped -> T.uncons -> Just (h, rest)) | h == c =
-  (w & typed %~ (|> h) & untyped %~ T.tail)
+  ((w & typed %~ (|> h) & untyped %~ T.tail))
 tryType _ w = w
 
--- typeKey :: Char -> State WordState ()
--- typeKey c = do
---   mFocused <- use focused
---   case mFocused of
---     Just fw -> do
---       focused . _Just .= tryType c fw
---       focused %= \case
---         Just (view untyped -> "") -> Nothing
---         fw                        -> fw
---     Nothing -> startWord c
-
--- startWord :: Char -> State WordState ()
--- startWord c = do
---   ws <- use sections
---   case ifind checkMatch ws of
---     Nothing          -> return ()
---     Just (loc, word) -> do
---       (newWord S.:> _) <- wordList <<%= S.tail
---       sections . itraversed . L.index loc .= newWord
---       focused ?= FocusedWord {_untyped = T.tail word, _typed = T.singleton c}
---   where checkMatch _ t = T.isPrefixOf (T.singleton c) t
+refreshWords :: forall m . MonadState GameState m => m ()
+refreshWords = get >>= (enemies . traversed . word %%~ setNewWord) >>= put
+ where
+  setNewWord :: Either T.Text FocusedWord -> m (Either T.Text FocusedWord)
+  setNewWord (Right (FocusedWord _ "")) = Left <$> getWord
+  setNewWord x                          = pure x

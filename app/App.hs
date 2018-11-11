@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module App where
 
 import Brick
@@ -6,6 +7,7 @@ import Graphics.Vty.Attributes
 import Data.Void
 import Graphics.Vty.Input.Events
 import Control.Monad.State
+import Control.Monad.Supply
 
 import Words
 import GameState
@@ -41,6 +43,8 @@ handleEvent
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next GameState)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
-handleEvent s (VtyEvent (EvKey (KChar c) _)) = continue $ flip execState s $ do
-  zoom enemiesState stepEnemies
+handleEvent s (VtyEvent (EvKey (KChar c  ) _      )) = continue $ do
+  flip execState s $ do
+    typeChar c
+    stepEnemies
 handleEvent s _ = continue s

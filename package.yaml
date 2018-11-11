@@ -33,6 +33,7 @@ dependencies:
 - distributive
 - selections
 - comonad
+- monad-supply
 
 library:
   source-dirs: src
@@ -47,6 +48,7 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - void-space
+    - streams
 
 tests:
   void-space-test:

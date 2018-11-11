@@ -2,33 +2,46 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE LambdaCase #-}
 module Enemies where
 
 import Control.Lens
 import Brick
+import           Brick.Markup
 import Control.Monad.State
 import qualified Data.Text as T
 import Data.Functor.Compose
 import Data.Functor.Selection
 import Control.Lens.Selection
 import Data.Coerce
-import Words
+import Control.Monad.Supply
+import           Attrs
+
+data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
+makeLenses ''FocusedWord
+
+focusedWordWidget :: FocusedWord -> Widget n
+focusedWordWidget fw =
+  markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
 
 data Enemy a = Enemy
   {_distance :: Int
   , _word :: a
-  } deriving (Functor, Foldable)
+  } deriving (Functor, Foldable, Traversable)
 
 makeLenses ''Enemy
 
-data Enemies = Enemies
-  { _enemies :: Selection (Compose [] Enemy) T.Text FocusedWord
+data EnemyState = EnemyState
+  { _enemies :: [Enemy (Either T.Text FocusedWord)]
   }
 
-makeLenses ''Enemies
+makeClassy ''EnemyState
 
-enemiesStart :: Enemies
-enemiesStart = Enemies . Selection $ Compose
+enemiesStart :: EnemyState
+enemiesStart = EnemyState
   [ Enemy 15 (Left "hi")
   , Enemy 20 (Left "hello")
   , Enemy 30 (Left "hello")
@@ -36,6 +49,6 @@ enemiesStart = Enemies . Selection $ Compose
   , Enemy 50 (Left "hello")
   ]
 
-stepEnemies :: State Enemies ()
+stepEnemies :: (HasEnemyState s, MonadState s m) => m ()
 stepEnemies = do
-  enemies . unwrapping . _Wrapped' . traverse . distance -= 1
+  enemies . traverse . distance -= 1

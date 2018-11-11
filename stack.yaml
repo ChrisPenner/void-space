@@ -39,6 +39,7 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps:
 - selections-0.2.0.0
+- monad-supply-0.7
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

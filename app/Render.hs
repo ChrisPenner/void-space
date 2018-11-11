@@ -28,19 +28,13 @@ drawGame s =
 
 drawEnemies :: GameState -> Widget n
 drawEnemies s =
-  let rows =
-        s
-          ^.. enemiesState
-          .   enemies
-          .   to (unify txt focusedWordWidget)
-          .   _Wrapped'
-          .   ifolded
-          .   withIndex
-          .   to addPadding
-      addPadding (i, e) =
-        txt (T.pack $ take (e ^. distance) (infiniteStarField i))
-          <+> (e ^. word)
+  let rows = s ^.. enemiesState . enemies . traversed . withIndex . to toWidget
   in  vBox rows
+ where
+  toWidget (i, e) =
+    let widget = either txt focusedWordWidget (e ^. word)
+    in  addPadding i (e ^. distance) widget
+  addPadding i amt w = txt (T.pack $ take amt (infiniteStarField i)) <+> w
 
 header :: Widget n
 header = hCenterLayer (txt "VOIDSPACE")

@@ -10,6 +10,7 @@ import Data.List.NonEmpty
 import qualified Data.Text.IO as TIO
 import qualified Data.Text as T
 import Render
+import Data.Stream.Infinite as S
 
 loadShip :: IO Ship
 loadShip = Ship <$> TIO.readFile "./ships/colonial-viper.txt"
@@ -18,4 +19,4 @@ main :: IO ()
 main = do
   ship           <- loadShip
   (w : wordList) <- T.words <$> TIO.readFile "word-list.txt"
-  void $ defaultMain app (gameStart (w :| wordList) ship)
+  void $ defaultMain app (gameStart (S.cycle (w :| wordList)) ship)

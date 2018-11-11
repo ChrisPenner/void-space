@@ -4,20 +4,21 @@
 module GameState where
 
 import           Control.Lens
-import           Words
 import qualified Data.Text                     as T
-import           Data.List.NonEmpty
-import qualified Data.Stream.Infinite          as S
 import           Enemies
+import           Data.Stream.Infinite          as S
 
 newtype Ship = Ship T.Text
-data GameState = GameState { _wordState :: WordState, _enemiesState :: Enemies, _ship :: Ship }
+data GameState = GameState { _enemiesState :: EnemyState, _ship :: Ship,  _wordStream :: S.Stream T.Text }
 
-makeLenses ''GameState
+makeClassy ''GameState
 
-gameStart :: NonEmpty T.Text -> Ship -> GameState
-gameStart (S.cycle -> wordList) ship' = GameState
-  { _wordState    = wordStart wordList
-  , _enemiesState = enemiesStart
+instance HasEnemyState GameState where
+  enemyState = enemiesState
+
+gameStart :: S.Stream T.Text -> Ship -> GameState
+gameStart wordStream' ship' = GameState
+  { _enemiesState = enemiesStart
   , _ship         = ship'
+  , _wordStream   = wordStream'
   }
