@@ -65,7 +65,10 @@ tryType c w@(view untyped -> T.uncons -> Just (h, rest)) | h == c =
 tryType _ w = w
 
 refreshWords :: forall m . MonadState GameState m => m ()
-refreshWords = get >>= (enemies . traversed . word %%~ setNewWord) >>= put
+refreshWords = do
+  newState      <- get >>= (enemies . traversed . word %%~ setNewWord)
+  newWordStream <- use wordStream
+  put (newState & wordStream .~ newWordStream)
  where
   setNewWord :: Either T.Text FocusedWord -> m (Either T.Text FocusedWord)
   setNewWord (Right (FocusedWord _ "")) = Left <$> getWord
