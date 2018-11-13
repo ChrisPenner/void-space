@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 61509036aa9f95ffc3b2105d8cd47ee9c88c33a2c987d9411b044eea261437ba
+-- hash: fd60d34cd04ffb8d8fe1a6dca0c733be843be9b22e6f87e5d72b1c94df41bcac
 
 name:           void-space
 version:        0.1.0.0
@@ -28,6 +28,7 @@ source-repository head
 library
   exposed-modules:
       Lib
+      Ship
   other-modules:
       Paths_void_space
   hs-source-dirs:

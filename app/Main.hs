@@ -16,6 +16,7 @@ import Data.Stream.Infinite as S
 import Graphics.Vty
 import Control.Concurrent
 import Control.Concurrent.Async
+import Ship
 
 loadShip :: IO Ship
 loadShip = Ship <$> TIO.readFile "./ships/colonial-viper.txt"

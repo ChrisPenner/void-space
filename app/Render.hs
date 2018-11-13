@@ -18,6 +18,7 @@ import           Enemies
 import           Control.Lens.Selection
 import           Data.Functor.Selection
 import           Data.Functor.Compose
+import           Ship
 
 drawCorridor :: GameState -> Widget n
 drawCorridor s = txt (s ^. ship . coerced) <+> drawEnemies s
@@ -38,26 +39,3 @@ drawEnemies s =
 
 header :: Widget n
 header = hCenterLayer (txt "VOIDSPACE")
-
-
--- shipText :: T.Text
--- shipText
---   = "\
--- \        //-A-\\\\\n\
--- \  ___---=======---___\n\
--- \(=__\\   /.. ..\\   /__=)\n\
--- \     ---\\__O__/---"
-
-
---        //-A-\\
---  ___---=======---___
---(=__\   /.. ..\   /__=)
---     ---\__O__/---
-
--- ship :: Widget n
--- ship = txt "\
--- \   /\\\n\
--- \  8  8\n\
--- \  8  8\n\
--- \ /|/\\|\\\n\
--- \/_||||_\\\n"

@@ -1,6 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
 module GameState where
 
 import           Control.Lens
@@ -8,9 +10,16 @@ import qualified Data.Text                     as T
 import           Enemies
 import           Data.Stream.Infinite          as S
 import           Words
+import           Control.Monad.State
+import           Ship
 
-newtype Ship = Ship T.Text
-data GameState = GameState { _enemiesState :: EnemyState, _ship :: Ship,  _wordStream' :: S.Stream T.Text }
+
+data GameState = GameState
+  { _enemiesState :: EnemyState
+  , _shipState :: Ship
+  , _wordStream' :: S.Stream T.Text
+  , _ticks :: Int
+  }
 
 makeClassy ''GameState
 
@@ -23,9 +32,20 @@ instance HasWordStream GameState where
 instance HasEnemyState GameState where
   enemyState = enemiesState
 
+instance HasShip GameState where
+  ship = shipState
+
+
 gameStart :: S.Stream T.Text -> Ship -> GameState
 gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
-  { _enemiesState = enemiesStart startWords
-  , _ship         = aShip
+  { _enemiesState = enemiesStart
+  , _shipState    = aShip
   , _wordStream'  = aWordStream
+  , _ticks        = 0
   }
+
+tick :: (MonadState GameState m, MonadIO m) => m ()
+tick = do
+  ticks += 1
+  stepEnemies
+  spawnEnemies
