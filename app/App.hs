@@ -22,7 +22,7 @@ import Enemies
 type ResourceName = Void
 type CustomEvent = ()
 
-app :: App GameState CustomEvent ResourceName
+app :: App (GameState n) CustomEvent ResourceName
 app = App
   { appDraw         = drawGame
   , appChooseCursor = chooseCursor
@@ -33,15 +33,15 @@ app = App
 
 
 chooseCursor
-  :: GameState
+  :: GameState n
   -> [CursorLocation ResourceName]
   -> Maybe (CursorLocation ResourceName)
 chooseCursor _ _ = Nothing
 
 handleEvent
-  :: GameState
+  :: GameState n
   -> BrickEvent ResourceName CustomEvent
-  -> EventM ResourceName (Next GameState)
+  -> EventM ResourceName (Next (GameState n))
 handleEvent s (AppEvent ()) = execStateT tick s >>= continue
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) =

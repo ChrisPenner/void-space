@@ -3,6 +3,10 @@
 {-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE DataKinds #-}
 module GameState where
 
 import           Control.Lens
@@ -12,31 +16,33 @@ import           Data.Stream.Infinite          as S
 import           Words
 import           Control.Monad.State
 import           Ship
+import           GHC.TypeLits
 
 
-data GameState = GameState
-  { _enemiesState :: EnemyState
-  , _shipState :: Ship
-  , _wordStream' :: S.Stream T.Text
-  , _ticks :: Int
-  }
+data GameState n where
+  GameState  :: KnownNat n => {
+      _enemiesState :: Enemies n MEnemy
+    , _shipState :: Ship
+    , _wordStream' :: S.Stream T.Text
+    , _ticks :: Int
+    } -> GameState n
 
 makeClassy ''GameState
 
-instance HasWords GameState where
-  eachWord = enemiesState . eachWord
+instance HasWords (GameState n) where
+  eachWord = enemies . traversed . _Just .  eachWord
 
-instance HasWordStream GameState where
+instance HasWordStream (GameState n) where
   wordStream = wordStream'
 
-instance HasEnemyState GameState where
-  enemyState = enemiesState
+instance HasEnemies (GameState n) n MEnemy where
+  enemies = enemiesState
 
-instance HasShip GameState where
+instance HasShip (GameState n) where
   ship = shipState
 
 
-gameStart :: S.Stream T.Text -> Ship -> GameState
+gameStart :: S.Stream T.Text -> Ship -> GameState 5
 gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
   { _enemiesState = enemiesStart
   , _shipState    = aShip
@@ -44,7 +50,7 @@ gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
   , _ticks        = 0
   }
 
-tick :: (MonadState GameState m, MonadIO m) => m ()
+tick :: (MonadState (GameState n) m, MonadIO m) => m ()
 tick = do
   ticks += 1
   stepEnemies

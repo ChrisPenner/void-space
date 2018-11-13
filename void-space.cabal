@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fd60d34cd04ffb8d8fe1a6dca0c733be843be9b22e6f87e5d72b1c94df41bcac
+-- hash: 3c1233f9f0af837b850cbd293a130eab9f2f20428360b78bbabcff29fbfc7590
 
 name:           void-space
 version:        0.1.0.0
@@ -40,6 +40,7 @@ library
     , comonad
     , containers
     , distributive
+    , finite-typelits
     , lens
     , monad-supply
     , mtl
@@ -47,6 +48,8 @@ library
     , selections
     , streams
     , text
+    , vector
+    , vector-sized
     , vty
   default-language: Haskell2010
 
@@ -73,6 +76,7 @@ executable void-space-exe
     , comonad
     , containers
     , distributive
+    , finite-typelits
     , lens
     , monad-supply
     , mtl
@@ -80,6 +84,8 @@ executable void-space-exe
     , selections
     , streams
     , text
+    , vector
+    , vector-sized
     , void-space
     , vty
   default-language: Haskell2010
@@ -99,6 +105,7 @@ test-suite void-space-test
     , comonad
     , containers
     , distributive
+    , finite-typelits
     , lens
     , monad-supply
     , mtl
@@ -106,6 +113,8 @@ test-suite void-space-test
     , selections
     , streams
     , text
+    , vector
+    , vector-sized
     , void-space
     , vty
   default-language: Haskell2010
