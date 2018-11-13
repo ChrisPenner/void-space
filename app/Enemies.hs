@@ -51,7 +51,7 @@ shouldSpawn :: (MonadIO m) => m Bool
 shouldSpawn = (<= spawnPercentage) <$> liftIO (randomRIO (0, 1))
  where
   spawnPercentage :: Float
-  spawnPercentage = 0.1
+  spawnPercentage = 0.3
 
 spawnEnemies
   :: (MonadIO m, HasWordStream s, HasEnemyState s, HasShip s, MonadState s m)

@@ -19,23 +19,34 @@ import           Control.Lens.Selection
 import           Data.Functor.Selection
 import           Data.Functor.Compose
 import           Ship
+import Data.Semigroup  as S
+import qualified Data.Map as M
+import Control.Arrow ((&&&))
+import Data.List
+import Data.Foldable
+import Data.Maybe
+import Control.Monad.State
 
 drawCorridor :: GameState -> Widget n
-drawCorridor s = txt (s ^. ship . coerced) <+> drawEnemies s
+drawCorridor s =
+  txt (s ^. ship . coerced) <+> drawEnemies s (evalState corridorSize s)
 
 drawGame :: GameState -> [Widget n]
 drawGame s =
   [header, vCenterLayer $ drawCorridor s, stars <=> dashboard, stars]
 
-drawEnemies :: GameState -> Widget n
-drawEnemies s =
-  let rows = s ^.. enemiesState . enemies . traversed . withIndex . to toWidget
-  in  vBox rows
+drawEnemies :: GameState -> Int -> Widget n
+drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
  where
-  toWidget (i, e) =
+  widgetForRow :: Int -> Widget n
+  widgetForRow i =
+    fromMaybe (txt "-") (sortedEnemies ^? ix i . to (toWidget i))
+  toWidget i e =
     let widget = either txt focusedWordWidget (e ^. word)
     in  addPadding i (e ^. distance) widget
   addPadding i amt w = txt (T.pack $ take amt (infiniteStarField i)) <+> w
+  sortedEnemies =
+    M.fromList $ (_row &&& id) <$> (s ^. enemies . to (sortOn _distance))
 
 header :: Widget n
 header = hCenterLayer (txt "VOIDSPACE")
