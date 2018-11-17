@@ -6,17 +6,17 @@ import Brick
 import Brick.BChan
 import Control.Monad
 
-import GameState
+import Data.GameState
 import App
 import Data.List.NonEmpty as NE
 import qualified Data.Text.IO as TIO
 import qualified Data.Text as T
-import Render
+import Display.Render
 import Data.Stream.Infinite as S
 import Graphics.Vty
 import Control.Concurrent
 import Control.Concurrent.Async
-import Ship
+import Data.Ship
 
 loadShip :: IO Ship
 loadShip = Ship <$> TIO.readFile "./ships/colonial-viper.txt"

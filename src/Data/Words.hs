@@ -11,7 +11,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Words where
+module Data.Words where
 
 import           Brick
 import           Brick.Markup
@@ -27,7 +27,7 @@ import           Data.Functor.Selection
 import           Control.Monad.State
 import           Data.Monoid
 import           Control.Comonad
-import           Attrs
+import           Display.Attrs
 
 data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
 makeLenses ''FocusedWord

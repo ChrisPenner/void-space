@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Attrs where
+module Display.Attrs where
 
 import Brick
 import Graphics.Vty.Attributes

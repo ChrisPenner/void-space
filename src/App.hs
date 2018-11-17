@@ -9,15 +9,17 @@ import Graphics.Vty.Input.Events
 import Control.Monad.State
 import Control.Monad.Supply
 
-import Words
-import GameState
-import Dashboard
-import Render
-import Stars
-import Attrs
+import Data.Words
+import Data.GameState
+import Display.Dashboard
+import Display.Render
+import Display.Stars
+import Display.Attrs
 import Brick.Widgets.Center
 import Control.Lens
-import Enemies
+import Data.Enemies
+import Actions.Actions
+import Actions.EnemyActions
 
 type ResourceName = Void
 type CustomEvent = ()

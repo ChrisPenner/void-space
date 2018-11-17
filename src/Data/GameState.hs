@@ -7,18 +7,42 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
-module GameState where
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE TypeFamilies #-}
+module Data.GameState where
 
 import           Control.Lens
 import qualified Data.Text                     as T
-import           Enemies
 import           Data.Stream.Infinite          as S
-import           Words
+import           Data.Words
 import           Control.Monad.State
-import           Ship
+import           Data.Ship
 import           GHC.TypeLits
-import           Health
-
+import           Data.Health
+import           Control.Lens                  as L
+import           Brick
+import           Brick.Markup
+import           Control.Monad.State
+import qualified Data.Text                     as T
+import           Data.Functor.Compose
+import           Data.Coerce
+import           Control.Monad.Supply
+import           Data.Words
+import           System.Random
+import           Data.Ship
+import           Data.Vector.Sized             as V
+import           GHC.TypeLits
+import           Data.Finite
+import           Data.Functor.Rep
+import           Data.Distributive
+import           Control.Lens.Indexed
+import           Control.Applicative           as A
+import           Data.Health
+import           Data.Monoid
+import           Control.Arrow
+import           Data.Enemies
 
 data GameState n where
   GameState  :: KnownNat n => {
@@ -54,9 +78,3 @@ gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
   , _ticks        = 0
   , _healthState  = startHealth
   }
-
-tick :: (MonadState (GameState n) m, MonadIO m) => m ()
-tick = do
-  ticks += 1
-  stepEnemies
-  spawnEnemies

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Render where
+module Display.Render where
 
 import           Control.Lens
 import           Data.Monoid
@@ -9,16 +9,16 @@ import           Brick.Widgets.Core
 import           Brick.Widgets.Border
 import           Brick.Widgets.Center
 import           Data.Text.Markup
-import           Words
-import           Dashboard
+import           Data.Words
+import           Display.Dashboard
 import qualified Data.Text                     as T
-import           Stars
-import           GameState
-import           Enemies
+import           Display.Stars
+import           Data.GameState
+import           Data.Enemies
 import           Control.Lens.Selection
 import           Data.Functor.Selection
 import           Data.Functor.Compose
-import           Ship
+import           Data.Ship
 import           Data.Semigroup                as S
 import qualified Data.Map                      as M
 import           Control.Arrow                            ( (&&&) )

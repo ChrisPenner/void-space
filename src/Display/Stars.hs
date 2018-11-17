@@ -1,4 +1,4 @@
-module Stars where
+module Display.Stars where
 
 import           Brick.Types
 import           Brick.BorderMap               as BM

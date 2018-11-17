@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Ship where
+module Data.Ship where
 
 import Control.Lens
 import qualified Data.Text as T

@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Health where
+module Data.Health where
 
 import Control.Lens
 

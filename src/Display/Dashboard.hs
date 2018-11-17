@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Dashboard where
+module Display.Dashboard where
 
 import Brick
 import Brick.Widgets.ProgressBar
 import Brick.Widgets.Border.Style
 import Brick.Widgets.Border
-import Health
+import Data.Health
 import Control.Lens
 
-import Attrs
+import Display.Attrs
 
 dashboard :: (HasHealth s) => s -> Widget n
 dashboard s = border (healthBar s <=> shieldsBar s)
