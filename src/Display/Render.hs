@@ -25,14 +25,7 @@ drawCorridor s =
 
 drawGame :: GameState n -> [Widget r]
 drawGame s =
-  [ header <=> drawScore s
-  , vCenterLayer $ drawCorridor s
-  , stars <=> dashboard s
-  , stars
-  ]
-
-drawScore :: GameState n -> Widget r
-drawScore s = txt $ s ^. score . to show . packed
+  [header, vCenterLayer $ drawCorridor s, stars <=> dashboard s, stars]
 
 drawEnemies :: GameState n -> Int -> Widget r
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
