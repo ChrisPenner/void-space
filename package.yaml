@@ -31,9 +31,7 @@ dependencies:
 - streams
 - adjunctions
 - distributive
-- selections
 - comonad
-- monad-supply
 - vector
 - vector-sized
 - finite-typelits

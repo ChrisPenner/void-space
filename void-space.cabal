@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: faf511888ff46efda49e2371413146e2381bb01e0d2f3f50cffbb054093026a5
+-- hash: ac8c409a8d810150eea3c9b3a8a8dc61f22041f307fd6ff54997c224285c3272
 
 name:           void-space
 version:        0.1.0.0
@@ -53,10 +53,8 @@ library
     , distributive
     , finite-typelits
     , lens
-    , monad-supply
     , mtl
     , random
-    , selections
     , streams
     , text
     , vector
@@ -81,10 +79,8 @@ executable void-space-exe
     , distributive
     , finite-typelits
     , lens
-    , monad-supply
     , mtl
     , random
-    , selections
     , streams
     , text
     , vector
@@ -110,10 +106,8 @@ test-suite void-space-test
     , distributive
     , finite-typelits
     , lens
-    , monad-supply
     , mtl
     , random
-    , selections
     , streams
     , text
     , vector
