@@ -1,7 +1,6 @@
 {-# LANGUAGE ViewPatterns #-}
 module Main where
 
-import Lib
 import Brick
 import Brick.BChan
 import Control.Monad
@@ -11,7 +10,6 @@ import App
 import Data.List.NonEmpty as NE
 import qualified Data.Text.IO as TIO
 import qualified Data.Text as T
-import Display.Render
 import Data.Stream.Infinite as S
 import Graphics.Vty
 import Control.Concurrent
@@ -25,13 +23,13 @@ main :: IO ()
 main = do
   let loadVty = standardIOConfig >>= mkVty
   bChan                     <- newBChan 10
-  ship                      <- loadShip
+  ship'                     <- loadShip
   (NE.fromList -> wordList) <- T.words <$> TIO.readFile "word-list.txt"
   withAsync (timer bChan) . const . void $ customMain
     loadVty
     (Just bChan)
     app
-    (gameStart (S.cycle wordList) ship)
+    (gameStart (S.cycle wordList) ship')
 
 millisecond :: Int
 millisecond = 1000

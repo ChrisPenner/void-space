@@ -2,24 +2,16 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module App where
 
+import Actions.Enemy
+import Actions.Words
 import Brick
-import Graphics.Vty.Attributes
-import Data.Void
-import Graphics.Vty.Input.Events
-import Control.Monad.State
-import Control.Monad.Supply
-
-import Data.Words
-import Data.GameState
-import Display.Dashboard
-import Display.Render
-import Display.Stars
-import Display.Attrs
-import Brick.Widgets.Center
 import Control.Lens
-import Data.Enemies
-import Actions.Actions
-import Actions.EnemyActions
+import Control.Monad.State
+import Data.GameState
+import Data.Void
+import Display.Attrs
+import Display.Render
+import Graphics.Vty.Input.Events
 
 type ResourceName = Void
 type CustomEvent = ()
@@ -44,7 +36,12 @@ handleEvent
   :: GameState n
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next (GameState n))
-handleEvent s (AppEvent ()) = execStateT (tick >> checkDamage) s >>= continue
+handleEvent s (AppEvent ()) =
+  let loop = do
+        stepEnemies
+        spawnEnemies
+        checkDamage
+  in  execStateT loop s >>= continue
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) =
   continue $ s &~ typeChar c &~ killEnemies

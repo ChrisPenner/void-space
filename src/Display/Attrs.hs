@@ -3,7 +3,6 @@ module Display.Attrs where
 
 import Brick
 import Graphics.Vty.Attributes
-import Brick.Widgets.ProgressBar
 
 healthAttr :: AttrName
 healthAttr = "health"
@@ -19,8 +18,7 @@ untypedAttr = "untyped"
 
 attrs :: AttrMap
 attrs =
-  let def = defAttr
-      mappings =
+  let mappings =
         [ (healthAttr , white `on` red)
         , (shieldsAttr, white `on` blue)
         , (typedAttr  , magenta `on` black)

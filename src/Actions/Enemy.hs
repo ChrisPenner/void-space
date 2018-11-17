@@ -1,11 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
-module Actions.EnemyActions where
+module Actions.Enemy where
 
 import qualified Data.Text as T
 import Control.Monad.State
 import Data.Enemies
-import Data.GameState
 import Data.Words
 import Data.Ship
 import Control.Lens as L
@@ -13,6 +12,8 @@ import Data.Monoid
 import Data.Health
 import Control.Applicative
 import System.Random
+import Actions.Words
+import Actions.Health
 
 stepEnemies :: (HasEnemies s n MEnemy, MonadState s m) => m ()
 stepEnemies = enemies . traverse . _Just . distance -= 1
@@ -58,9 +59,9 @@ checkDamage
 checkDamage = do
   Sum totalDamagingEnemies <-
     enemies . traversed %%= \x -> if has (_Just . distance . filtered (<= 0)) x
-      then (Sum 1, Nothing)
+      then (Sum 1 :: Sum Int, Nothing)
       else (Sum 0, x)
-  health . hp -= (fromIntegral totalDamagingEnemies * 0.1)
+  hurtBy (fromIntegral totalDamagingEnemies * 0.1)
 
 killEnemies :: forall s n m . (HasEnemies s n MEnemy, MonadState s m) => m ()
 killEnemies = (enemies . traversed) %= maybeKill

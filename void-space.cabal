@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5769befd114b8b93f28616556ebecda9ff6027b725c732d8c5ec60dcf72ec851
+-- hash: 61a39551c66f97a8d1dc822e0cf3c14aa73620a360db5b44e1cb490a5a25c0a2
 
 name:           void-space
 version:        0.1.0.0
@@ -27,8 +27,9 @@ source-repository head
 
 library
   exposed-modules:
-      Actions.Actions
-      Actions.EnemyActions
+      Actions.Enemy
+      Actions.Health
+      Actions.Words
       App
       Data.Enemies
       Data.GameState
@@ -39,7 +40,7 @@ library
       Display.Dashboard
       Display.Render
       Display.Stars
-      Lib
+      VoidSpace
   other-modules:
       Paths_void_space
   hs-source-dirs:
@@ -70,7 +71,7 @@ executable void-space-exe
       Paths_void_space
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall
   build-depends:
       adjunctions
     , async

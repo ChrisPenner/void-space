@@ -1,7 +1,6 @@
 module Display.Stars where
 
 import           Brick.Types
-import           Brick.BorderMap               as BM
 import           Brick.Widgets.Core
 import           Control.Lens
 import qualified Data.Text                     as T

@@ -17,31 +17,9 @@ import           Control.Lens
 import qualified Data.Text                     as T
 import           Data.Stream.Infinite          as S
 import           Data.Words
-import           Control.Monad.State
 import           Data.Ship
 import           GHC.TypeLits
 import           Data.Health
-import           Control.Lens                  as L
-import           Brick
-import           Brick.Markup
-import           Control.Monad.State
-import qualified Data.Text                     as T
-import           Data.Functor.Compose
-import           Data.Coerce
-import           Control.Monad.Supply
-import           Data.Words
-import           System.Random
-import           Data.Ship
-import           Data.Vector.Sized             as V
-import           GHC.TypeLits
-import           Data.Finite
-import           Data.Functor.Rep
-import           Data.Distributive
-import           Control.Lens.Indexed
-import           Control.Applicative           as A
-import           Data.Health
-import           Data.Monoid
-import           Control.Arrow
 import           Data.Enemies
 
 data GameState n where
@@ -71,7 +49,7 @@ instance HasHealth (GameState n) where
   health = healthState
 
 gameStart :: S.Stream T.Text -> Ship -> GameState 5
-gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
+gameStart aWordStream aShip = GameState
   { _enemiesState = enemiesStart
   , _shipState    = aShip
   , _wordStream'  = aWordStream
