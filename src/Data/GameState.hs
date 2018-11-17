@@ -27,8 +27,8 @@ data GameState n where
       _enemiesState :: Enemies n MEnemy
     , _shipState :: Ship
     , _wordStream' :: S.Stream T.Text
-    , _ticks :: Int
     , _healthState :: Health
+    , _score :: Int
     } -> GameState n
 
 makeClassy ''GameState
@@ -53,6 +53,6 @@ gameStart aWordStream aShip = GameState
   { _enemiesState = enemiesStart
   , _shipState    = aShip
   , _wordStream'  = aWordStream
-  , _ticks        = 0
   , _healthState  = startHealth
+  , _score        = 0
   }

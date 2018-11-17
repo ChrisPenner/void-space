@@ -14,6 +14,7 @@ import Control.Applicative
 import System.Random
 import Actions.Words
 import Actions.Health
+import Data.GameState
 
 stepEnemies :: (HasEnemies s n MEnemy, MonadState s m) => m ()
 stepEnemies = enemies . traverse . _Just . distance -= 1
@@ -61,13 +62,19 @@ checkDamage = do
     enemies . traversed %%= \x -> if has (_Just . distance . filtered (<= 0)) x
       then (Sum 1 :: Sum Int, Nothing)
       else (Sum 0, x)
-  hurtBy (fromIntegral totalDamagingEnemies * 0.1)
+  hurtBy (fromIntegral totalDamagingEnemies * 0.3)
 
-killEnemies :: forall s n m . (HasEnemies s n MEnemy, MonadState s m) => m ()
-killEnemies = (enemies . traversed) %= maybeKill
+killEnemies
+  :: forall s n m
+   . (HasGameState s n, HasEnemies s n MEnemy, MonadState s m)
+  => m ()
+killEnemies = do
+  Sum numKilled <- (enemies . traversed) %%= maybeKill
+  score += numKilled
  where
-  maybeKill e =
-    if has (_Just . word . _Left) e
-         || has (_Just . word . _Right . untyped . to (not . T.null)) e
-      then e
-      else Nothing
+  maybeKill Nothing = (Sum 0, Nothing)
+  maybeKill (Just e) =
+    if has (word . _Left) e
+         || has (word . _Right . untyped . filtered (not . T.null)) e
+      then (Sum 0, Just e)
+      else (Sum 1, Nothing)

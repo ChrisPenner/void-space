@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 61a39551c66f97a8d1dc822e0cf3c14aa73620a360db5b44e1cb490a5a25c0a2
+-- hash: faf511888ff46efda49e2371413146e2381bb01e0d2f3f50cffbb054093026a5
 
 name:           void-space
 version:        0.1.0.0
@@ -40,7 +40,6 @@ library
       Display.Dashboard
       Display.Render
       Display.Stars
-      VoidSpace
   other-modules:
       Paths_void_space
   hs-source-dirs:

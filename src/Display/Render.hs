@@ -17,6 +17,7 @@ import           Control.Arrow                            ( (&&&) )
 import           Data.List
 import           Data.Maybe
 import           Control.Monad.State
+import           Data.Text.Lens
 
 drawCorridor :: GameState n -> Widget r
 drawCorridor s =
@@ -24,7 +25,14 @@ drawCorridor s =
 
 drawGame :: GameState n -> [Widget r]
 drawGame s =
-  [header, vCenterLayer $ drawCorridor s, stars <=> dashboard s, stars]
+  [ header <=> drawScore s
+  , vCenterLayer $ drawCorridor s
+  , stars <=> dashboard s
+  , stars
+  ]
+
+drawScore :: GameState n -> Widget r
+drawScore s = txt $ s ^. score . to show . packed
 
 drawEnemies :: GameState n -> Int -> Widget r
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
