@@ -109,11 +109,11 @@ newEnemy = do
   sz  <- corridorSize
   loc <- liftIO $ randomRIO (0, sz)
   w   <- getWord
-  enemies . traversed . L.index loc ?= Enemy
-    { _row      = loc
-    , _distance = 50
-    , _word     = Left w
-    }
+  enemies . traversed . L.index loc %= addIfMissing loc w
+ where
+  addIfMissing loc w e@(Just _) = e
+  addIfMissing loc w Nothing =
+    Just $ Enemy {_row = loc, _distance = 50, _word = Left w}
 
 
 killEnemies :: forall s n m . (HasEnemies s n MEnemy, MonadState s m) => m ()

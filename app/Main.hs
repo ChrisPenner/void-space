@@ -33,10 +33,10 @@ main = do
     app
     (gameStart (S.cycle wordList) ship)
 
-second :: Int
-second = 1000000
+millisecond :: Int
+millisecond = 1000
 
 timer :: BChan () -> IO ()
 timer bChan = forever $ do
   writeBChan bChan ()
-  threadDelay second
+  threadDelay (300 * millisecond)
