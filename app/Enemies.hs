@@ -34,7 +34,8 @@ import           Data.Finite
 import           Data.Functor.Rep
 import           Data.Distributive
 import           Control.Lens.Indexed
-import           Control.Applicative as A
+import           Control.Applicative           as A
+import           Health
 
 data Enemy a = Enemy
   { _distance :: Int
@@ -115,6 +116,12 @@ newEnemy = do
   addIfMissing loc w Nothing =
     Just $ Enemy {_row = loc, _distance = 50, _word = Left w}
 
+checkDamage
+  :: forall s n m . (HasHealth s, HasEnemies s n MEnemy, MonadState s m) => m ()
+checkDamage = do
+  n <- gets
+    (lengthOf (enemies . traversed . _Just . distance . filtered (== 0)))
+  health . hp -= (fromIntegral n * 0.1)
 
 killEnemies :: forall s n m . (HasEnemies s n MEnemy, MonadState s m) => m ()
 killEnemies = (enemies . traversed) %= checkAlive

@@ -42,7 +42,7 @@ handleEvent
   :: GameState n
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next (GameState n))
-handleEvent s (AppEvent ()) = execStateT tick s >>= continue
+handleEvent s (AppEvent ()) = execStateT (tick >> checkDamage) s >>= continue
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s (VtyEvent (EvKey (KChar c) _)) =
   continue $ s &~ typeChar c &~ killEnemies

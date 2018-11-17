@@ -17,6 +17,7 @@ import           Words
 import           Control.Monad.State
 import           Ship
 import           GHC.TypeLits
+import           Health
 
 
 data GameState n where
@@ -25,6 +26,7 @@ data GameState n where
     , _shipState :: Ship
     , _wordStream' :: S.Stream T.Text
     , _ticks :: Int
+    , _healthState :: Health
     } -> GameState n
 
 makeClassy ''GameState
@@ -41,6 +43,8 @@ instance HasEnemies (GameState n) n MEnemy where
 instance HasShip (GameState n) where
   ship = shipState
 
+instance HasHealth (GameState n) where
+  health = healthState
 
 gameStart :: S.Stream T.Text -> Ship -> GameState 5
 gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
@@ -48,6 +52,7 @@ gameStart (S.splitAt 5 -> (startWords, aWordStream)) aShip = GameState
   , _shipState    = aShip
   , _wordStream'  = aWordStream
   , _ticks        = 0
+  , _healthState  = startHealth
   }
 
 tick :: (MonadState (GameState n) m, MonadIO m) => m ()

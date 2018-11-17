@@ -33,7 +33,7 @@ drawCorridor s =
 
 drawGame :: GameState n -> [Widget r]
 drawGame s =
-  [header, vCenterLayer $ drawCorridor s, stars <=> dashboard, stars]
+  [header, vCenterLayer $ drawCorridor s, stars <=> dashboard s, stars]
 
 drawEnemies :: GameState n -> Int -> Widget r
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]

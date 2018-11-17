@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3c1233f9f0af837b850cbd293a130eab9f2f20428360b78bbabcff29fbfc7590
+-- hash: 56f29f2b48f83eb978e1d0b910076e27857d7a51a893d906a1b2c858fe4d20fb
 
 name:           void-space
 version:        0.1.0.0
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Health
       Lib
       Ship
   other-modules:
