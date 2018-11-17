@@ -18,14 +18,14 @@ import           Data.List
 import           Data.Maybe
 import           Control.Monad.State
 
-drawCorridor :: GameState n -> Widget r
+drawCorridor :: GameState n -> Widget String
 drawCorridor s = txt (s ^. ship) <+> drawEnemies s (evalState corridorSize s)
 
-drawGame :: GameState n -> [Widget r]
+drawGame :: GameState n -> [Widget String]
 drawGame s =
   [header, vCenterLayer $ drawCorridor s, stars <=> dashboard s, stars]
 
-drawEnemies :: GameState n -> Int -> Widget r
+drawEnemies :: GameState n -> Int -> Widget String
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
  where
   widgetForRow :: Int -> Widget n

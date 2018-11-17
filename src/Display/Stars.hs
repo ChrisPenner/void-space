@@ -6,8 +6,9 @@ import           Control.Lens
 import qualified Data.Text                     as T
 import           System.Random
 
-stars :: Widget n
-stars = Widget {hSize = Greedy, vSize = Greedy, render = renderStars}
+stars :: Widget String
+stars = cached "background-stars"
+  $ Widget {hSize = Greedy, vSize = Greedy, render = renderStars}
 
 renderStars :: RenderM n (Result n)
 renderStars = do

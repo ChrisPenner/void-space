@@ -9,12 +9,11 @@ import Brick
 import Control.Lens
 import Control.Monad.State
 import Data.GameState
-import Data.Void
 import Display.Attrs
 import Display.Render
 import Graphics.Vty.Input.Events
 
-type ResourceName = Void
+type ResourceName = String
 type CustomEvent = ()
 
 app :: App (GameState n) CustomEvent ResourceName
