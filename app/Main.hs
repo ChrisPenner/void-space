@@ -14,22 +14,23 @@ import Data.Stream.Infinite as S
 import Graphics.Vty
 import Control.Concurrent
 import Control.Concurrent.Async
-import Data.Ship
+import Data.Art
 
-loadShip :: IO Ship
-loadShip = Ship <$> TIO.readFile "./ships/colonial-viper.txt"
+loadArt :: IO Art
+loadArt = Art <$> TIO.readFile "./art/colonial-viper.txt" <*> TIO.readFile
+  "./art/wormhole.txt"
 
 main :: IO ()
 main = do
   let loadVty = standardIOConfig >>= mkVty
   bChan                     <- newBChan 10
-  ship'                     <- loadShip
+  art'                      <- loadArt
   (NE.fromList -> wordList) <- T.words <$> TIO.readFile "word-list.txt"
   withAsync (timer bChan) . const . void $ customMain
     loadVty
     (Just bChan)
     app
-    (gameStart (S.cycle wordList) ship')
+    (gameStart (S.cycle wordList) art')
 
 millisecond :: Int
 millisecond = 1000

@@ -6,7 +6,7 @@ import qualified Data.Text as T
 import Control.Monad.State
 import Data.Enemies
 import Data.Words
-import Data.Ship
+import Data.Art
 import Control.Lens as L
 import Data.Monoid
 import Data.Health
@@ -29,7 +29,7 @@ spawnEnemies
   :: ( MonadIO m
      , HasWordStream s
      , HasEnemies s n MEnemy
-     , HasShip s
+     , HasArt s
      , MonadState s m
      )
   => m ()
@@ -40,7 +40,7 @@ spawnEnemies = do
 newEnemy
   :: forall s n m
    . ( HasWordStream s
-     , HasShip s
+     , HasArt s
      , HasEnemies s n MEnemy
      , MonadState s m
      , MonadIO m

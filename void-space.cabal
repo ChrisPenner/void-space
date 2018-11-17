@@ -31,10 +31,10 @@ library
       Actions.Health
       Actions.Words
       App
+      Data.Art
       Data.Enemies
       Data.GameState
       Data.Health
-      Data.Ship
       Data.Words
       Display.Attrs
       Display.Dashboard

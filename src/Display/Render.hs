@@ -11,7 +11,7 @@ import qualified Data.Text                     as T
 import           Display.Stars
 import           Data.GameState
 import           Data.Enemies
-import           Data.Ship
+import           Data.Art
 import qualified Data.Map                      as M
 import           Control.Arrow                            ( (&&&) )
 import           Data.List
@@ -19,8 +19,7 @@ import           Data.Maybe
 import           Control.Monad.State
 
 drawCorridor :: GameState n -> Widget r
-drawCorridor s =
-  txt (s ^. ship . coerced) <+> drawEnemies s (evalState corridorSize s)
+drawCorridor s = txt (s ^. ship) <+> drawEnemies s (evalState corridorSize s)
 
 drawGame :: GameState n -> [Widget r]
 drawGame s =
