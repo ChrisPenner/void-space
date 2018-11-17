@@ -36,6 +36,8 @@ import           Data.Distributive
 import           Control.Lens.Indexed
 import           Control.Applicative           as A
 import           Health
+import           Data.Monoid
+import Control.Arrow
 
 data Enemy a = Enemy
   { _distance :: Int
@@ -112,26 +114,23 @@ newEnemy = do
   w   <- getWord
   enemies . traversed . L.index loc %= addIfMissing loc w
  where
-  addIfMissing loc w e@(Just _) = e
-  addIfMissing loc w Nothing =
-    Just $ Enemy {_row = loc, _distance = 50, _word = Left w}
+  addIfMissing loc w e =
+    e <|> Just Enemy {_row = loc, _distance = 50, _word = Left w}
 
 checkDamage
   :: forall s n m . (HasHealth s, HasEnemies s n MEnemy, MonadState s m) => m ()
 checkDamage = do
-  n <- gets
-    (lengthOf (enemies . traversed . _Just . distance . filtered (== 0)))
-  health . hp -= (fromIntegral n * 0.1)
+  Sum totalDamagingEnemies <-
+    enemies . traversed %%= \x -> if has (_Just . distance . filtered (<= 0)) x
+      then (Sum 1, Nothing)
+      else (Sum 0, x)
+  health . hp -= (fromIntegral totalDamagingEnemies * 0.1)
 
 killEnemies :: forall s n m . (HasEnemies s n MEnemy, MonadState s m) => m ()
-killEnemies = (enemies . traversed) %= checkAlive
+killEnemies = (enemies . traversed) %= maybeKill
  where
-  checkAlive :: MEnemy -> MEnemy
-  checkAlive e =
-    if has
-         (_Just . word . choosing united
-                                  (untyped . filtered (not . T.null) . united)
-         )
-         e
+  maybeKill e =
+    if has (_Just . word . _Left) e
+         || has (_Just . word . _Right . untyped . to (not . T.null)) e
       then e
       else Nothing
