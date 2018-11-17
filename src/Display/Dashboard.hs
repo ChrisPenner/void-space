@@ -6,25 +6,29 @@ import Brick.Widgets.Border
 import Brick.Widgets.Border.Style
 import Brick.Widgets.ProgressBar
 import Control.Lens
+import Data.GameState
 import Data.Health
 import Display.Attrs
-import qualified Data.Text as T
-import Data.GameState
 import Text.Printf
+import Text.Wrap
+import qualified Data.Text as T
 
 dashboard :: (HasHealth s, HasGameState s n) => s -> Widget r
-dashboard s = healthArea s <+> killCounter s
+dashboard s = killCounter s <=> healthArea s
 
 healthArea :: (HasHealth s) => s -> Widget r
 healthArea s = border (healthBar s <=> shieldsBar s)
 
 killCounter :: (HasGameState s n) => s -> Widget r
 killCounter s =
-  let scoreText = T.pack . show $ (s ^. score)
+  let scoreText = if (s ^. score) <= 0
+        then T.singleton '-'
+        else T.replicate (s ^. score) $ T.singleton 'x'
   in  borderWithLabel (txt "Kills")
-      . padBottom (Pad 1)
-      . padLeftRight 3
-      . txt
+      . padRight Max
+      . padLeft (Pad 1)
+      . txtWrapWith
+          (WrapSettings {preserveIndentation = False, breakLongWords = True})
       $ scoreText
 
 displayHealthAmount :: String -> Float -> String

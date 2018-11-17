@@ -17,7 +17,6 @@ import           Control.Arrow                            ( (&&&) )
 import           Data.List
 import           Data.Maybe
 import           Control.Monad.State
-import           Data.Text.Lens
 
 drawCorridor :: GameState n -> Widget r
 drawCorridor s =
@@ -31,8 +30,8 @@ drawEnemies :: GameState n -> Int -> Widget r
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
  where
   widgetForRow :: Int -> Widget n
-  widgetForRow i =
-    fromMaybe (txt "-") (sortedEnemies ^? ix i . to (toWidget i))
+  widgetForRow i = fromMaybe (str . take 100 $ infiniteStarField i)
+                             (sortedEnemies ^? ix i . to (toWidget i))
   toWidget i e =
     let widget = either txt focusedWordWidget (e ^. word)
     in  addPadding i (e ^. distance) widget

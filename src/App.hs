@@ -3,6 +3,7 @@
 module App where
 
 import Actions.Enemy
+import Actions.Health
 import Actions.Words
 import Brick
 import Control.Lens
@@ -38,6 +39,7 @@ handleEvent
   -> EventM ResourceName (Next (GameState n))
 handleEvent s (AppEvent ()) =
   let loop = do
+        incTimeSinceHit
         stepEnemies
         spawnEnemies
         checkDamage

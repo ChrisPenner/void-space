@@ -54,5 +54,5 @@ gameStart aWordStream aShip = GameState
   , _shipState    = aShip
   , _wordStream'  = aWordStream
   , _healthState  = startHealth
-  , _score        = 0
+  , _score        = 20
   }

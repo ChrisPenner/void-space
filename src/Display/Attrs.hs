@@ -20,7 +20,7 @@ attrs :: AttrMap
 attrs =
   let mappings =
         [ (healthAttr , white `on` red)
-        , (shieldsAttr, white `on` blue)
+        , (shieldsAttr, black `on` cyan)
         , (typedAttr  , magenta `on` black)
         , (untypedAttr, cyan `on` black)
         ]

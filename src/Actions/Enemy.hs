@@ -63,6 +63,7 @@ checkDamage = do
       then (Sum 1 :: Sum Int, Nothing)
       else (Sum 0, x)
   hurtBy (fromIntegral totalDamagingEnemies * 0.3)
+  when (totalDamagingEnemies > 0) $ timeSinceHit .= 0
 
 killEnemies
   :: forall s n m

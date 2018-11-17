@@ -35,6 +35,7 @@ dependencies:
 - vector
 - vector-sized
 - finite-typelits
+- word-wrap
 
 library:
   source-dirs: src

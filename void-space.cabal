@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ac8c409a8d810150eea3c9b3a8a8dc61f22041f307fd6ff54997c224285c3272
+-- hash: e7b4ce630a5c5b6a45d888670bf4b913fa43b4a3705f3f8dfe836f411dc2a37b
 
 name:           void-space
 version:        0.1.0.0
@@ -60,6 +60,7 @@ library
     , vector
     , vector-sized
     , vty
+    , word-wrap
   default-language: Haskell2010
 
 executable void-space-exe
@@ -87,6 +88,7 @@ executable void-space-exe
     , vector-sized
     , void-space
     , vty
+    , word-wrap
   default-language: Haskell2010
 
 test-suite void-space-test
@@ -114,4 +116,5 @@ test-suite void-space-test
     , vector-sized
     , void-space
     , vty
+    , word-wrap
   default-language: Haskell2010
