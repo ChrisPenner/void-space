@@ -18,8 +18,14 @@ import           Data.List
 import           Data.Maybe
 import           Control.Monad.State
 
+drawWormhole :: GameState n -> Widget r
+drawWormhole s = txt (s ^. wormhole)
+
 drawCorridor :: GameState n -> Widget String
-drawCorridor s = txt (s ^. ship) <+> drawEnemies s (evalState corridorSize s)
+drawCorridor s =
+  txt (s ^. ship)
+    <+> hLimit 50 (padRight Max (drawEnemies s (evalState corridorSize s)))
+    <+> drawWormhole s
 
 drawGame :: GameState n -> [Widget String]
 drawGame s =
