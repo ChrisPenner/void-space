@@ -39,6 +39,8 @@ dependencies:
 
 library:
   source-dirs: src
+  default-extensions: 
+    - StrictData
 
 executables:
   void-space-exe:
