@@ -54,5 +54,5 @@ gameStart aWordStream art' = GameState
   , _artState     = art'
   , _wordStream'  = aWordStream
   , _healthState  = startHealth
-  , _score        = 20
+  , _score        = 0
   }

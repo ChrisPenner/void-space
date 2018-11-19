@@ -2,30 +2,35 @@
 
 module Display.Render where
 
-import           Control.Lens
 import           Brick
 import           Brick.Widgets.Center
-import           Data.Words
-import           Display.Dashboard
-import qualified Data.Text                     as T
-import           Display.Stars
-import           Data.GameState
-import           Data.Enemies
-import           Data.Art
-import qualified Data.Map                      as M
 import           Control.Arrow                            ( (&&&) )
+import           Control.Lens
+import           Control.Monad.State
+import           Data.Art
+import           Data.Enemies
+import           Data.GameState
 import           Data.List
 import           Data.Maybe
-import           Control.Monad.State
+import           Data.Words
+import           Display.Attrs
+import           Display.Dashboard
+import           Display.Stars
+import qualified Data.Map                      as M
+import qualified Data.Text                     as T
+import           Brick.Markup
 
 drawWormhole :: GameState n -> Widget r
-drawWormhole s = txt (s ^. wormhole)
+drawWormhole s = withAttr wormholeAttr $ txt (s ^. wormhole)
 
 drawCorridor :: GameState n -> Widget String
 drawCorridor s =
-  txt (s ^. ship)
+  drawShip s
     <+> hLimit 50 (padRight Max (drawEnemies s (evalState corridorSize s)))
     <+> drawWormhole s
+
+drawShip :: GameState n -> Widget String
+drawShip s = withAttr shipAttr $ txt (s ^. ship)
 
 drawGame :: GameState n -> [Widget String]
 drawGame s =
@@ -46,4 +51,4 @@ drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
     (s ^.. enemies . traversed . _Just)
 
 header :: Widget n
-header = hCenterLayer (txt "VOIDSPACE")
+header = hCenterLayer $ markup ("VOID" @? redAttr <> "SPACE" @? cyanAttr)
