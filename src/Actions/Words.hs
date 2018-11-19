@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Actions.Words where
 
-import Data.Words
+import Types
 import qualified Data.Text as T
 import Data.Stream.Infinite as S
 import Control.Monad.State

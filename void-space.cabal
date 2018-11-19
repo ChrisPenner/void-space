@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3b13dfe2bf7f57ec26cb275161589a727a175b65afe34e291ee7b9929bb94df6
+-- hash: ead9edb59715411db19b8c5ef7680736baedac6282d8ab1925b19b77530d2234
 
 name:           void-space
 version:        0.1.0.0
@@ -31,15 +31,12 @@ library
       Actions.Health
       Actions.Words
       App
-      Data.Art
-      Data.Enemies
-      Data.GameState
-      Data.Health
-      Data.Words
       Display.Attrs
       Display.Dashboard
       Display.Render
       Display.Stars
+      Display.Words
+      Types
   other-modules:
       Paths_void_space
   hs-source-dirs:
@@ -53,6 +50,7 @@ library
     , containers
     , distributive
     , finite-typelits
+    , generic-lens
     , lens
     , mtl
     , random
@@ -80,6 +78,7 @@ executable void-space-exe
     , containers
     , distributive
     , finite-typelits
+    , generic-lens
     , lens
     , mtl
     , random
@@ -108,6 +107,7 @@ test-suite void-space-test
     , containers
     , distributive
     , finite-typelits
+    , generic-lens
     , lens
     , mtl
     , random

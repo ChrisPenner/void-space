@@ -6,8 +6,7 @@ import Brick.Widgets.Border
 import Brick.Widgets.Border.Style
 import Brick.Widgets.ProgressBar
 import Control.Lens
-import Data.GameState
-import Data.Health
+import Types
 import Display.Attrs
 import Text.Printf
 import Text.Wrap

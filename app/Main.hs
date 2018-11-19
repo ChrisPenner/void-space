@@ -1,20 +1,19 @@
 {-# LANGUAGE ViewPatterns #-}
 module Main where
 
-import Brick
-import Brick.BChan
-import Control.Monad
+import           Brick
+import           Brick.BChan
+import           Control.Monad
 
-import Data.GameState
-import App
-import Data.List.NonEmpty as NE
-import qualified Data.Text.IO as TIO
-import qualified Data.Text as T
-import Data.Stream.Infinite as S
-import Graphics.Vty
-import Control.Concurrent
-import Control.Concurrent.Async
-import Data.Art
+import           App
+import           Control.Concurrent
+import           Control.Concurrent.Async
+import           Data.List.NonEmpty            as NE
+import           Data.Stream.Infinite          as S
+import           Graphics.Vty
+import           Types
+import qualified Data.Text                     as T
+import qualified Data.Text.IO                  as TIO
 
 loadArt :: IO Art
 loadArt =

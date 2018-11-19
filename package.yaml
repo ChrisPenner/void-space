@@ -36,6 +36,7 @@ dependencies:
 - vector-sized
 - finite-typelits
 - word-wrap
+- generic-lens
 
 library:
   source-dirs: src

@@ -1,7 +1,8 @@
 module Actions.Health where
-import Control.Monad.State
-import Data.Health
+
 import Control.Lens
+import Control.Monad.State
+import Types
 
 recoveryTime :: Int
 recoveryTime = 10

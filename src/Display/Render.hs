@@ -8,18 +8,17 @@ import           Brick.Widgets.Center
 import           Control.Arrow                            ( (&&&) )
 import           Control.Lens
 import           Control.Monad.State
-import           Data.Art
-import           Data.Enemies
-import           Data.GameState
 import           Data.List
 import           Data.Maybe
-import           Data.Words
 import           Display.Attrs
 import           Display.Dashboard
 import           Display.Stars
-import           Data.Health
+import           Types
+import           Display.Words
 import qualified Data.Map                      as M
 import qualified Data.Text                     as T
+import Actions.Enemy
+
 
 drawWormhole :: GameState n -> Widget r
 drawWormhole s = withAttr wormholeAttr $ txt (s ^. wormhole)
@@ -37,7 +36,7 @@ drawGame :: GameState n -> [Widget String]
 drawGame s = if s ^. hp <= 0
   then
     [ header
-    , hCenterLayer . vCenterLayer $ gameOver s <=> startOver
+    , hCenterLayer . vCenterLayer $ gameOverWidget s <=> startOver
     , stars
     , stars <=> dashboard s
     ]
@@ -47,8 +46,8 @@ drawGame s = if s ^. hp <= 0
     , stars <=> dashboard s
     ]
 
-gameOver :: GameState n -> Widget String
-gameOver s = withAttr redAttr . txt $ s ^. gameover
+gameOverWidget :: GameState n -> Widget String
+gameOverWidget s = withAttr redAttr . txt $ s ^. gameover
 
 startOver :: Widget String
 startOver = txt "press <space> to start over"
@@ -62,9 +61,8 @@ drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
   toWidget i e =
     let widget = wordWidget (e ^. word) in addPadding i (e ^. distance) widget
   addPadding i amt w = txt (T.pack $ take amt (infiniteStarField i)) <+> w
-  sortedEnemies = M.fromList $ (_row &&& id) <$> sortOn
-    _distance
-    (s ^.. enemies . traversed . _Just)
+  sortedEnemies =
+    M.fromList $ (_row &&& id) <$> sortOn _distance (s ^.. enemies . _Just)
 
 header :: Widget n
 header = hCenterLayer $ markup ("VOID" @? redAttr <> "SPACE" @? cyanAttr)

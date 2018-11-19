@@ -7,8 +7,7 @@ import Actions.Words
 import Brick
 import Control.Lens
 import Control.Monad.State
-import Data.GameState
-import Data.Health
+import Types
 import Display.Attrs
 import Display.Render
 import Graphics.Vty.Input.Events
