@@ -1,4 +1,5 @@
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE FlexibleContexts #-}
 module Actions.Words where
 
 import Data.Words
@@ -9,24 +10,24 @@ import Control.Lens
 
 typeChar :: (HasWords s, HasWordStream s, MonadState s m) => Char -> m ()
 typeChar c = do
-  result <- gets (failover (eachWord . _Right) (tryType c))
+  result <- gets (failover eachWord (tryType c))
   case result of
     Just newEnemies -> put newEnemies
     Nothing         -> startWord c
 
 startWord :: (HasWords s, MonadState s m) => Char -> m ()
-startWord (T.singleton -> c) = do
-  let doesMatch (Left  txt) = c `T.isPrefixOf` txt
-      doesMatch (Right _  ) = False
-  match <- gets $ failover (eachWord . filtered doesMatch) startTyping
-  case match of
-    Just w  -> put w
-    Nothing -> pure ()
+startWord c = do
+  let doesMatch w | _typed w == T.empty =
+        T.singleton c `T.isPrefixOf` _untyped w
+  firstMatchIndex <- gets $ findOf (eachWord . withIndex) (doesMatch . snd)
+  case firstMatchIndex of
+    Nothing       -> pure ()
+    Just (ind, _) -> eachWord . index ind %= startTyping c
 
-startTyping :: Either T.Text FocusedWord -> Either T.Text FocusedWord
-startTyping (Left (T.uncons -> Just (c, rest))) =
-  Right (FocusedWord (T.singleton c) rest)
-startTyping x = x
+startTyping :: Char -> WordT -> WordT
+startTyping c w@(_untyped -> T.uncons -> Just (c', rest))
+  | c == c'   = w & untyped %~ T.tail & typed %~ (|> c)
+  | otherwise = w
 
 getWord :: (HasWordStream s, MonadState s m) => m T.Text
 getWord = do
@@ -34,7 +35,7 @@ getWord = do
   wordStream .= as
   return a
 
-tryType :: Char -> FocusedWord -> FocusedWord
+tryType :: Char -> WordT -> WordT
 tryType c w@(view untyped -> T.uncons -> Just (h, _rest)) | h == c =
   ((w & typed %~ (|> h) & untyped %~ T.tail))
 tryType _ w = w

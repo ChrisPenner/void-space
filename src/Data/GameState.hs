@@ -24,7 +24,7 @@ import           Data.Enemies
 
 data GameState n where
   GameState  :: KnownNat n => {
-      _enemiesState :: Enemies n MEnemy
+      _enemiesState :: Enemies n (Maybe Enemy)
     , _artState :: Art
     , _wordStream' :: S.Stream T.Text
     , _healthState :: Health
@@ -34,12 +34,12 @@ data GameState n where
 makeClassy ''GameState
 
 instance HasWords (GameState n) where
-  eachWord = enemies . traversed . _Just .  eachWord
+  eachWord = enemies . traversed <. (_Just . word)
 
 instance HasWordStream (GameState n) where
   wordStream = wordStream'
 
-instance HasEnemies (GameState n) n MEnemy where
+instance HasEnemies (GameState n) n (Maybe Enemy) where
   enemies = enemiesState
 
 instance HasArt (GameState n) where

@@ -1,8 +1,9 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Actions.Enemy where
 
-import qualified Data.Text as T
 import Control.Monad.State
 import Data.Enemies
 import Data.Words
@@ -16,7 +17,7 @@ import Actions.Words
 import Actions.Health
 import Data.GameState
 
-stepEnemies :: (HasEnemies s n MEnemy, MonadState s m) => m ()
+stepEnemies :: (HasEnemies s n (Maybe Enemy), MonadState s m) => m ()
 stepEnemies = enemies . traverse . _Just . distance -= 1
 
 shouldSpawn :: (MonadIO m) => m Bool
@@ -28,7 +29,7 @@ shouldSpawn = (<= spawnPercentage) <$> liftIO (randomRIO (0, 1))
 spawnEnemies
   :: ( MonadIO m
      , HasWordStream s
-     , HasEnemies s n MEnemy
+     , HasEnemies s n (Maybe Enemy)
      , HasArt s
      , MonadState s m
      )
@@ -41,7 +42,7 @@ newEnemy
   :: forall s n m
    . ( HasWordStream s
      , HasArt s
-     , HasEnemies s n MEnemy
+     , HasEnemies s n (Maybe Enemy)
      , MonadState s m
      , MonadIO m
      )
@@ -50,13 +51,16 @@ newEnemy = do
   sz  <- corridorSize
   loc <- liftIO $ randomRIO (0, sz)
   w   <- getWord
-  enemies . traversed . L.index loc %= addIfMissing loc w
+  let newWord = WordT {_untyped = w, _typed = ""}
+  enemies . traversed . L.index loc %= addIfMissing loc newWord
  where
   addIfMissing loc w e =
-    e <|> Just Enemy {_row = loc, _distance = 50, _word = Left w}
+    e <|> Just Enemy {_row = loc, _distance = 50, _word = w}
 
 checkDamage
-  :: forall s n m . (HasHealth s, HasEnemies s n MEnemy, MonadState s m) => m ()
+  :: forall s n m
+   . (HasHealth s, HasEnemies s n (Maybe Enemy), MonadState s m)
+  => m ()
 checkDamage = do
   Sum totalDamagingEnemies <-
     enemies . traversed %%= \x -> if has (_Just . distance . filtered (<= 0)) x
@@ -67,15 +71,11 @@ checkDamage = do
 
 killEnemies
   :: forall s n m
-   . (HasGameState s n, HasEnemies s n MEnemy, MonadState s m)
+   . (HasGameState s n, HasEnemies s n (Maybe Enemy), MonadState s m)
   => m ()
 killEnemies = do
   Sum numKilled <- (enemies . traversed) %%= maybeKill
   score += numKilled
  where
-  maybeKill Nothing = (Sum 0, Nothing)
-  maybeKill (Just e) =
-    if has (word . _Left) e
-         || has (word . _Right . untyped . filtered (not . T.null)) e
-      then (Sum 0, Just e)
-      else (Sum 1, Nothing)
+  maybeKill (Just (view (word . untyped) -> "")) = (Sum 1, Nothing)
+  maybeKill e = (Sum 0, e)

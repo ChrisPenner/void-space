@@ -43,8 +43,7 @@ drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
   widgetForRow i = fromMaybe (str . take 100 $ infiniteStarField i)
                              (sortedEnemies ^? ix i . to (toWidget i))
   toWidget i e =
-    let widget = either txt focusedWordWidget (e ^. word)
-    in  addPadding i (e ^. distance) widget
+    let widget = wordWidget (e ^. word) in addPadding i (e ^. distance) widget
   addPadding i amt w = txt (T.pack $ take amt (infiniteStarField i)) <+> w
   sortedEnemies = M.fromList $ (_row &&& id) <$> sortOn
     _distance

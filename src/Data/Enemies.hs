@@ -12,24 +12,18 @@ module Data.Enemies where
 import Control.Lens
 import Data.Words
 import Data.Vector.Sized as V
-import qualified Data.Text as T
 import Data.Distributive
 import Data.Functor.Rep
 import GHC.TypeLits
 import Data.Finite
 
-data Enemy a = Enemy
+data Enemy = Enemy
   { _distance :: Int
   , _row :: Int
-  , _word :: a
-  } deriving (Functor, Foldable, Traversable)
+  , _word :: WordT
+  }
 
 makeLenses ''Enemy
-
-instance HasWords (Enemy (Either T.Text FocusedWord)) where
-  eachWord = traverse
-
-type MEnemy = Maybe (Enemy (Either T.Text FocusedWord))
 
 newtype Enemies n a = Enemies (Vector n a) deriving (Functor, Foldable, Traversable)
 makeClassy ''Enemies

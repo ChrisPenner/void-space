@@ -1,4 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Data.Words where
 
@@ -9,17 +10,15 @@ import           Control.Lens                  as L
 import qualified Data.Stream.Infinite          as S
 import           Display.Attrs
 
-data FocusedWord = FocusedWord { _typed :: T.Text, _untyped :: T.Text }
-makeLenses ''FocusedWord
-
-type WordT = Either T.Text FocusedWord
+data WordT = WordT { _typed :: T.Text, _untyped :: T.Text }
+makeLenses ''WordT
 
 class HasWords s where
-  eachWord :: Traversal' s WordT
+  eachWord :: IndexedTraversal' Int s WordT
 
 class HasWordStream s where
   wordStream :: Lens' s (S.Stream T.Text)
 
-focusedWordWidget :: FocusedWord -> Widget n
-focusedWordWidget fw =
-  markup ((fw ^. typed) @? typedAttr <> (fw ^. untyped) @? untypedAttr)
+wordWidget :: WordT -> Widget n
+wordWidget w =
+  markup ((w ^. typed) @? typedAttr <> (w ^. untyped) @? untypedAttr)
