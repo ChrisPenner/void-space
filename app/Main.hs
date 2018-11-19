@@ -17,8 +17,11 @@ import Control.Concurrent.Async
 import Data.Art
 
 loadArt :: IO Art
-loadArt = Art <$> TIO.readFile "./art/colonial-viper.txt" <*> TIO.readFile
-  "./art/wormhole.txt"
+loadArt =
+  Art
+    <$> TIO.readFile "./art/colonial-viper.txt"
+    <*> TIO.readFile "./art/wormhole.txt"
+    <*> TIO.readFile "./art/game-over.txt"
 
 main :: IO ()
 main = do

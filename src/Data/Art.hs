@@ -6,7 +6,7 @@ import Control.Lens
 import qualified Data.Text as T
 import Control.Monad.State
 
-data Art = Art { _ship :: T.Text, _wormhole :: T.Text }
+data Art = Art { _ship :: T.Text, _wormhole :: T.Text, _gameover :: T.Text }
 
 makeClassy ''Art
 

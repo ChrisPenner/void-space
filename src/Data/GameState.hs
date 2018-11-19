@@ -48,7 +48,7 @@ instance HasArt (GameState n) where
 instance HasHealth (GameState n) where
   health = healthState
 
-gameStart :: S.Stream T.Text -> Art -> GameState 5
+gameStart :: (KnownNat n) => S.Stream T.Text -> Art -> GameState n
 gameStart aWordStream art' = GameState
   { _enemiesState = enemiesStart
   , _artState     = art'
@@ -56,3 +56,6 @@ gameStart aWordStream art' = GameState
   , _healthState  = startHealth
   , _score        = 0
   }
+
+resetGameState :: (KnownNat n) => GameState n -> GameState n
+resetGameState g = gameStart (g ^. wordStream) (g ^. art)

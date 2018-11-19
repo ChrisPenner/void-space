@@ -3,6 +3,7 @@
 module Display.Render where
 
 import           Brick
+import           Brick.Markup
 import           Brick.Widgets.Center
 import           Control.Arrow                            ( (&&&) )
 import           Control.Lens
@@ -16,9 +17,9 @@ import           Data.Words
 import           Display.Attrs
 import           Display.Dashboard
 import           Display.Stars
+import           Data.Health
 import qualified Data.Map                      as M
 import qualified Data.Text                     as T
-import           Brick.Markup
 
 drawWormhole :: GameState n -> Widget r
 drawWormhole s = withAttr wormholeAttr $ txt (s ^. wormhole)
@@ -33,8 +34,24 @@ drawShip :: GameState n -> Widget String
 drawShip s = withAttr shipAttr $ txt (s ^. ship)
 
 drawGame :: GameState n -> [Widget String]
-drawGame s =
-  [header, hCenterLayer . vCenterLayer $ drawCorridor s, stars <=> dashboard s]
+drawGame s = if s ^. hp <= 0
+  then
+    [ header
+    , hCenterLayer . vCenterLayer $ gameOver s <=> startOver
+    , stars
+    , stars <=> dashboard s
+    ]
+  else
+    [ header
+    , hCenterLayer . vCenterLayer $ drawCorridor s
+    , stars <=> dashboard s
+    ]
+
+gameOver :: GameState n -> Widget String
+gameOver s = withAttr redAttr . txt $ s ^. gameover
+
+startOver :: Widget String
+startOver = txt "press <space> to start over"
 
 drawEnemies :: GameState n -> Int -> Widget String
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
