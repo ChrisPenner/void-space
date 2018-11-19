@@ -21,18 +21,10 @@ import           GHC.TypeLits
 
 
 data Art = Art { _ship :: T.Text, _wormhole :: T.Text, _gameover :: T.Text }
-
 makeClassy ''Art
 
 data WordT = WordT { _typed :: T.Text, _untyped :: T.Text }
 makeLenses ''WordT
-
-class HasWords s where
-  eachWord :: IndexedTraversal' Int s WordT
-
-class HasWordStream s where
-  wordStream :: Lens' s (S.Stream T.Text)
-
 
 data Enemy = Enemy
   { _distance :: Int
@@ -45,13 +37,7 @@ makeLenses ''Enemy
 newtype Enemies' n a = Enemies' (Vector n a)
   deriving (Functor, Foldable, Traversable)
 
-class HasEnemies s where
-  enemies :: IndexedTraversal' Int s (Maybe Enemy)
-
 type Enemies n = Enemies' n (Maybe Enemy)
-
-instance HasWords (Enemies n) where
-  eachWord = traversed <. (_Just . word)
 
 enemiesStart :: (KnownNat n) => Enemies n
 enemiesStart = Enemies' (V.generate (const Nothing))
@@ -76,6 +62,30 @@ data GameState n where
 
 makeClassy ''GameState
 
+gameStart :: (KnownNat n) => S.Stream T.Text -> Art -> GameState n
+gameStart aWordStream art' = GameState
+  { _enemiesState = enemiesStart
+  , _artState     = art'
+  , _wordStream'  = aWordStream
+  , _healthState  = startHealth
+  , _score        = 0
+  }
+
+resetGameState :: (KnownNat n) => GameState n -> GameState n
+resetGameState g = gameStart (g ^. wordStream) (g ^. art)
+
+class HasEnemies s where
+  enemies :: IndexedTraversal' Int s (Maybe Enemy)
+
+class HasWords s where
+  eachWord :: IndexedTraversal' Int s WordT
+
+class HasWordStream s where
+  wordStream :: Lens' s (S.Stream T.Text)
+
+instance HasWords (Enemies n) where
+  eachWord = traversed <. (_Just . word)
+
 instance HasWords (GameState n) where
   eachWord = enemiesState . eachWord
 
@@ -90,15 +100,3 @@ instance HasArt (GameState n) where
 
 instance HasHealth (GameState n) where
   health = healthState
-
-gameStart :: (KnownNat n) => S.Stream T.Text -> Art -> GameState n
-gameStart aWordStream art' = GameState
-  { _enemiesState = enemiesStart
-  , _artState     = art'
-  , _wordStream'  = aWordStream
-  , _healthState  = startHealth
-  , _score        = 0
-  }
-
-resetGameState :: (KnownNat n) => GameState n -> GameState n
-resetGameState g = gameStart (g ^. wordStream) (g ^. art)
