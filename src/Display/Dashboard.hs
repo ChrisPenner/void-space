@@ -12,13 +12,13 @@ import Text.Printf
 import Text.Wrap
 import qualified Data.Text as T
 
-dashboard :: (HasHealth s, HasGameState s n) => s -> Widget r
+dashboard :: (HasHealth s, HasGameState s) => s -> Widget r
 dashboard s = killCounter s <=> healthArea s
 
 healthArea :: (HasHealth s) => s -> Widget r
 healthArea s = border (healthBar s <=> shieldsBar s)
 
-killCounter :: (HasGameState s n) => s -> Widget r
+killCounter :: (HasGameState s) => s -> Widget r
 killCounter s =
   let scoreText = if (s ^. score) <= 0
         then T.singleton '-'
@@ -31,7 +31,7 @@ killCounter s =
       $ scoreText
 
 displayHealthAmount :: String -> Float -> String
-displayHealthAmount word amt = printf "%s %.0f%%" word (amt * 100)
+displayHealthAmount w amt = printf "%s %.0f%%" w (amt * 100)
 
 shieldsBar :: (HasHealth s) => s -> Widget r
 shieldsBar s =

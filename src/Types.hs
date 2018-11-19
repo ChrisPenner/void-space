@@ -9,14 +9,12 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE GADTs #-}
 
 module Types where
 
 import qualified Data.Text                     as T
 import           Control.Lens                  as L
 import qualified Data.Stream.Infinite          as S
-import           Data.Vector.Sized             as V
 import           GHC.TypeLits
 
 
@@ -34,13 +32,10 @@ data Enemy = Enemy
 
 makeLenses ''Enemy
 
-newtype Enemies' n a = Enemies' (Vector n a)
-  deriving (Functor, Foldable, Traversable)
+type Enemies = [ Maybe Enemy ]
 
-type Enemies n = Enemies' n (Maybe Enemy)
-
-enemiesStart :: (KnownNat n) => Enemies n
-enemiesStart = Enemies' (V.generate (const Nothing))
+enemiesStart :: Int -> Enemies
+enemiesStart n = replicate n Nothing
 
 data Health = Health
   { _hp :: Float, _shields :: Float, _timeSinceHit :: Int}
@@ -51,27 +46,27 @@ startHealth :: Health
 startHealth = Health 1 1 0
 
 
-data GameState n where
-  GameState  :: KnownNat n => {
-      _enemiesState :: Enemies n
+data GameState =
+  GameState {
+      _enemiesState :: Enemies
     , _artState :: Art
     , _wordStream' :: S.Stream T.Text
     , _healthState :: Health
     , _score :: Int
-    } -> GameState n
+    }
 
 makeClassy ''GameState
 
-gameStart :: (KnownNat n) => S.Stream T.Text -> Art -> GameState n
+gameStart :: S.Stream T.Text -> Art -> GameState
 gameStart aWordStream art' = GameState
-  { _enemiesState = enemiesStart
+  { _enemiesState = enemiesStart (art' ^. ship . to (length . T.lines))
   , _artState     = art'
   , _wordStream'  = aWordStream
   , _healthState  = startHealth
   , _score        = 0
   }
 
-resetGameState :: (KnownNat n) => GameState n -> GameState n
+resetGameState :: GameState -> GameState
 resetGameState g = gameStart (g ^. wordStream) (g ^. art)
 
 class HasEnemies s where
@@ -83,20 +78,20 @@ class HasWords s where
 class HasWordStream s where
   wordStream :: Lens' s (S.Stream T.Text)
 
-instance HasWords (Enemies n) where
+instance HasWords Enemies where
   eachWord = traversed <. (_Just . word)
 
-instance HasWords (GameState n) where
+instance HasWords GameState where
   eachWord = enemiesState . eachWord
 
-instance HasWordStream (GameState n) where
+instance HasWordStream GameState  where
   wordStream = wordStream'
 
-instance HasEnemies (GameState n) where
+instance HasEnemies GameState  where
   enemies = enemiesState . traversed
 
-instance HasArt (GameState n) where
+instance HasArt GameState  where
   art = artState
 
-instance HasHealth (GameState n) where
+instance HasHealth GameState where
   health = healthState

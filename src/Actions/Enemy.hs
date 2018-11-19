@@ -55,8 +55,7 @@ checkDamage = do
   hurtBy (fromIntegral totalDamagingEnemies * 0.3)
   when (totalDamagingEnemies > 0) $ timeSinceHit .= 0
 
-killEnemies
-  :: forall s n m . (HasGameState s n, HasEnemies s, MonadState s m) => m ()
+killEnemies :: (HasGameState s, HasEnemies s, MonadState s m) => m ()
 killEnemies = do
   Sum numKilled <- enemies %%= maybeKill
   score += numKilled

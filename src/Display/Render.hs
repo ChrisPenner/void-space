@@ -20,19 +20,19 @@ import qualified Data.Text                     as T
 import Actions.Enemy
 
 
-drawWormhole :: GameState n -> Widget r
+drawWormhole :: GameState -> Widget r
 drawWormhole s = withAttr wormholeAttr $ txt (s ^. wormhole)
 
-drawCorridor :: GameState n -> Widget String
+drawCorridor :: GameState -> Widget String
 drawCorridor s =
   drawShip s
     <+> hLimit 50 (padRight Max (drawEnemies s (evalState corridorSize s)))
     <+> drawWormhole s
 
-drawShip :: GameState n -> Widget String
+drawShip :: GameState -> Widget String
 drawShip s = withAttr shipAttr $ txt (s ^. ship)
 
-drawGame :: GameState n -> [Widget String]
+drawGame :: GameState -> [Widget String]
 drawGame s = if s ^. hp <= 0
   then
     [ header
@@ -46,13 +46,13 @@ drawGame s = if s ^. hp <= 0
     , stars <=> dashboard s
     ]
 
-gameOverWidget :: GameState n -> Widget String
+gameOverWidget :: GameState -> Widget String
 gameOverWidget s = withAttr redAttr . txt $ s ^. gameover
 
 startOver :: Widget String
 startOver = txt "press <space> to start over"
 
-drawEnemies :: GameState n -> Int -> Widget String
+drawEnemies :: GameState -> Int -> Widget String
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
  where
   widgetForRow :: Int -> Widget n

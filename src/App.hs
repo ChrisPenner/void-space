@@ -11,12 +11,11 @@ import Types
 import Display.Attrs
 import Display.Render
 import Graphics.Vty.Input.Events
-import GHC.TypeLits
 
 type ResourceName = String
 type CustomEvent = ()
 
-app :: App (GameState 5) CustomEvent ResourceName
+app :: App GameState CustomEvent ResourceName
 app = App
   { appDraw         = drawGame
   , appChooseCursor = chooseCursor
@@ -27,16 +26,15 @@ app = App
 
 
 chooseCursor
-  :: GameState n
+  :: GameState
   -> [CursorLocation ResourceName]
   -> Maybe (CursorLocation ResourceName)
 chooseCursor _ _ = Nothing
 
 handleEvent
-  :: KnownNat n
-  => GameState n
+  :: GameState
   -> BrickEvent ResourceName CustomEvent
-  -> EventM ResourceName (Next (GameState n))
+  -> EventM ResourceName (Next GameState)
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s e = if s ^. hp <= 0
   then case e of
