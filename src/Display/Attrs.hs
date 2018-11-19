@@ -33,11 +33,11 @@ attrs =
   let mappings =
         [ (healthAttr  , white `on` red)
         , (shieldsAttr , black `on` cyan)
-        , (typedAttr   , magenta `on` black)
-        , (untypedAttr , cyan `on` black)
-        , (wormholeAttr, yellow `on` black)
-        , (shipAttr    , green `on` black)
-        , (redAttr     , red `on` black)
-        , (cyanAttr    , cyan `on` black)
+        , (typedAttr   , defAttr `withForeColor` magenta)
+        , (untypedAttr , defAttr `withForeColor` cyan)
+        , (wormholeAttr, defAttr `withForeColor` yellow)
+        , (shipAttr    , defAttr `withForeColor` green)
+        , (redAttr     , defAttr `withForeColor` red)
+        , (cyanAttr    , defAttr `withForeColor` cyan)
         ]
   in  attrMap defAttr mappings

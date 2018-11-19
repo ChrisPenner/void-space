@@ -38,4 +38,4 @@ millisecond = 1000
 timer :: BChan () -> IO ()
 timer bChan = forever $ do
   writeBChan bChan ()
-  threadDelay (250 * millisecond)
+  threadDelay (200 * millisecond)
