@@ -45,5 +45,5 @@ shieldsBar s =
 healthBar :: (HasHealth s) => s -> Widget r
 healthBar s =
   withBorderStyle unicodeBold
-    . overrideAttr progressCompleteAttr                            healthAttr
-    $ progressBar  (Just $ displayHealthAmount "health" (s ^. hp)) (s ^. hp)
+    . overrideAttr progressCompleteAttr                          healthAttr
+    $ progressBar  (Just $ displayHealthAmount "hull" (s ^. hp)) (s ^. hp)
