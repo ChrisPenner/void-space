@@ -13,6 +13,7 @@ import           Control.Monad.State
 import           Data.Monoid
 import           System.Random
 import           Types
+import           Actions.Game
 import qualified Data.Text                     as T
 
 
@@ -54,10 +55,11 @@ checkDamage = do
   hurtBy (fromIntegral totalDamagingEnemies * enemyDamage)
   when (totalDamagingEnemies > 0) $ timeSinceHit .= 0
 
-killEnemies :: (HasGameState s, HasEnemies s, MonadState s m) => m ()
+killEnemies :: (MonadIO m, HasGameState s, HasEnemies s, MonadState s m) => m ()
 killEnemies = do
   Sum numKilled <- enemies %%= maybeKill
   score += numKilled
+  when (numKilled > 0) speedUp
  where
   maybeKill (Just (view (word . untyped) -> "")) = (Sum 1, Nothing)
   maybeKill e = (Sum 0, e)

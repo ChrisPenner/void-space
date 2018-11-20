@@ -43,7 +43,7 @@ drawGame :: GameState -> [Widget String]
 drawGame s = if s ^. hp <= 0
   then
     [ header
-    , hCenterLayer . vCenterLayer $ gameOverWidget s <=> startOver
+    , hCenterLayer . vCenterLayer $ gameOverWidget s <=> hCenterLayer startOver
     , stars
     , stars <=> dashboard s
     ]

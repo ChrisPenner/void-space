@@ -1,16 +1,16 @@
 {-# LANGUAGE DataKinds #-}
 module App where
 
-import Actions.Enemy
-import Actions.Health
-import Actions.Words
-import Brick
-import Control.Lens
-import Control.Monad.State
-import Types
-import Display.Attrs
-import Display.Render
-import Graphics.Vty.Input.Events
+import           Actions.Enemy
+import           Actions.Health
+import           Actions.Words
+import           Brick
+import           Control.Lens
+import           Control.Monad.State
+import           Types
+import           Display.Attrs
+import           Display.Render
+import           Graphics.Vty.Input.Events
 
 type ResourceName = String
 type CustomEvent = ()
@@ -38,7 +38,7 @@ handleEvent
 handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
 handleEvent s e = if s ^. hp <= 0
   then case e of
-    VtyEvent (EvKey (KChar ' ') []) -> continue $ resetGameState s
+    VtyEvent (EvKey (KChar ' ') []) -> resetGameState s >>= continue
     _                               -> continue s
   else case e of
     AppEvent () ->
@@ -49,5 +49,9 @@ handleEvent s e = if s ^. hp <= 0
             checkDamage
       in  execStateT loop s >>= continue
     VtyEvent (EvKey (KChar 'c') [MCtrl]) -> halt s
-    VtyEvent (EvKey (KChar c  ) _      ) -> continue $ s &~ typeChar c &~ killEnemies
+    VtyEvent (EvKey (KChar c  ) _      ) -> do
+      s' <- flip execStateT s $ do
+        typeChar c
+        killEnemies
+      continue s'
     _ -> continue s

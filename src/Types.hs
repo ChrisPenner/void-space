@@ -15,7 +15,8 @@ module Types where
 import qualified Data.Text                     as T
 import           Control.Lens                  as L
 import qualified Data.Stream.Infinite          as S
-import           GHC.TypeLits
+import           Control.Concurrent
+import Control.Monad.State
 
 
 data Art = Art { _ship :: T.Text, _wormhole :: T.Text, _gameover :: T.Text }
@@ -53,21 +54,25 @@ data GameState =
     , _wordStream' :: S.Stream T.Text
     , _healthState :: Health
     , _score :: Int
+    , _speedVar :: MVar Int
     }
 
 makeClassy ''GameState
 
-gameStart :: S.Stream T.Text -> Art -> GameState
-gameStart aWordStream art' = GameState
+gameStart :: S.Stream T.Text -> Art -> MVar Int -> GameState
+gameStart aWordStream art' spdVar = GameState
   { _enemiesState = enemiesStart (art' ^. ship . to (length . T.lines))
   , _artState     = art'
   , _wordStream'  = aWordStream
   , _healthState  = startHealth
   , _score        = 0
+  , _speedVar     = spdVar
   }
 
-resetGameState :: GameState -> GameState
-resetGameState g = gameStart (g ^. wordStream) (g ^. art)
+resetGameState :: MonadIO m => GameState -> m GameState
+resetGameState g = do
+  void . liftIO $ swapMVar (g ^. speedVar) 1
+  return (gameStart (g ^. wordStream) (g ^. art) (g ^. speedVar))
 
 class HasEnemies s where
   enemies :: IndexedTraversal' Int s (Maybe Enemy)

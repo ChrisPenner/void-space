@@ -23,7 +23,7 @@ killCounter s =
   let scoreText = if (s ^. score) <= 0
         then T.singleton '-'
         else T.replicate (s ^. score) $ T.singleton 'x'
-  in  borderWithLabel (txt "Kills")
+  in  borderWithLabel (txt $ "Kills " <> T.pack (show (s ^. score)))
       . padRight Max
       . padLeft (Pad 1)
       . txtWrapWith

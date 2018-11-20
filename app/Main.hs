@@ -1,4 +1,5 @@
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE TypeApplications #-}
 module Main where
 
 import           Brick
@@ -23,22 +24,28 @@ loadArt =
     <*> TIO.readFile "./art/wormhole.txt"
     <*> TIO.readFile "./art/game-over.txt"
 
+
+baseTickTime :: Int
+baseTickTime = tickTime
+
 main :: IO ()
 main = do
   let loadVty = standardIOConfig >>= mkVty
   bChan                     <- newBChan 10
   art'                      <- loadArt
+  timeMultiplier            <- newMVar 1
   (NE.fromList -> wordList) <- T.words <$> TIO.readFile "word-list.txt"
-  withAsync (timer bChan) . const . void $ customMain
+  withAsync (timer timeMultiplier bChan) . const . void $ customMain
     loadVty
     (Just bChan)
     app
-    (gameStart (S.cycle wordList) art')
+    (gameStart (S.cycle wordList) art' timeMultiplier)
 
-millisecond :: Int
-millisecond = 1000
-
-timer :: BChan () -> IO ()
-timer bChan = forever $ do
+timer :: MVar Int -> BChan () -> IO ()
+timer multiplierVar bChan = forever $ do
   writeBChan bChan ()
-  threadDelay (tickTimeMilliseconds * millisecond)
+  multiplier <- readMVar multiplierVar
+  threadDelay
+    . round @Float
+    $ fromIntegral baseTickTime
+    * (1 - (fromIntegral multiplier / 100))
