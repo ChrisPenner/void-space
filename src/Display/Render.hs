@@ -54,7 +54,7 @@ drawGame s = if s ^. hp <= 0
     ]
 
 gameOverWidget :: GameState -> Widget String
-gameOverWidget s = withAttr redAttr . txt $ s ^. gameover
+gameOverWidget s = withAttr gameOverAttr . txt $ s ^. gameover
 
 drawEnemies :: GameState -> Int -> Widget String
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
@@ -69,4 +69,4 @@ drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
     M.fromList $ (_row &&& id) <$> sortOn _distance (s ^.. enemies . _Just)
 
 header :: Widget n
-header = hCenterLayer $ markup ("VOID" @? redAttr <> "SPACE" @? cyanAttr)
+header = hCenterLayer $ markup ("VOID" @? typedAttr <> "SPACE" @? untypedAttr)

@@ -22,39 +22,38 @@ wormholeAttr = "wormhole"
 shipAttr :: AttrName
 shipAttr = "ship"
 
-redAttr :: AttrName
-redAttr = "red"
+criticalShieldAttr :: AttrName
+criticalShieldAttr = "criticalShield"
 
-cyanAttr :: AttrName
-cyanAttr = "cyan"
+damagedShieldAttr :: AttrName
+damagedShieldAttr = "damagedShield"
 
-yellowAttr :: AttrName
-yellowAttr = "yellow"
+hurtShieldAttr :: AttrName
+hurtShieldAttr = "hurtShield"
 
-magentaAttr :: AttrName
-magentaAttr = "magenta"
+mediumShieldAttr :: AttrName
+mediumShieldAttr = "mediumShield"
 
-greenAttr :: AttrName
-greenAttr = "green"
+goodShieldAttr :: AttrName
+goodShieldAttr = "goodShield"
 
-blueAttr :: AttrName
-blueAttr = "blue"
-
+gameOverAttr :: AttrName
+gameOverAttr = "gameOver"
 
 attrs :: AttrMap
 attrs =
   let mappings =
-        [ (healthAttr  , white `on` red)
-        , (shieldsAttr , black `on` cyan)
-        , (typedAttr   , defAttr `withForeColor` magenta)
-        , (untypedAttr , defAttr `withForeColor` cyan)
-        , (wormholeAttr, defAttr `withForeColor` yellow)
-        , (shipAttr    , defAttr `withForeColor` green)
-        , (redAttr     , defAttr `withForeColor` red)
-        , (cyanAttr    , defAttr `withForeColor` cyan)
-        , (yellowAttr  , defAttr `withForeColor` yellow)
-        , (greenAttr   , defAttr `withForeColor` green)
-        , (magentaAttr , defAttr `withForeColor` magenta)
-        , (blueAttr    , defAttr `withForeColor` blue)
+        [ (healthAttr        , white `on` red)
+        , (shieldsAttr       , black `on` cyan)
+        , (typedAttr         , defAttr `withForeColor` magenta)
+        , (untypedAttr       , defAttr `withForeColor` cyan)
+        , (wormholeAttr      , defAttr `withForeColor` yellow)
+        , (shipAttr          , defAttr `withForeColor` green)
+        , (gameOverAttr      , defAttr `withForeColor` red)
+        , (criticalShieldAttr, defAttr `withForeColor` red `withStyle` bold)
+        , (damagedShieldAttr , defAttr `withForeColor` magenta `withStyle` bold)
+        , (hurtShieldAttr    , defAttr `withForeColor` yellow `withStyle` bold)
+        , (mediumShieldAttr  , defAttr `withForeColor` blue `withStyle` bold)
+        , (goodShieldAttr    , defAttr `withForeColor` cyan `withStyle` bold)
         ]
   in  attrMap defAttr mappings
