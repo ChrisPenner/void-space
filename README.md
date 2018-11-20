@@ -6,6 +6,9 @@ Yo dawg; I heard you like types, so I made a typing tutor where you can type you
 
 Fight off scary category-theory in outer-space with nothing but your trusty keyboard :)
 
+See how many kills you can get before you asphyxiate in the cold dark void
+(trust me, you'll lose eventually :wink: )
+
 ## Usage
 
 -   Clone the repo
