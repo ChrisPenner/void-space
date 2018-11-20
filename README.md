@@ -12,3 +12,4 @@ Also it's got a random star-field-generator so that's pretty cool.
 -   `$ stack install`
 -   `$ void-space-exe` (from the root of the repo)
 -   Customize `word-list.txt` or add your own space-ships and art!
+-   Customize values in `src/Config.hs` to tweak difficulty!

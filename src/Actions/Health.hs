@@ -3,9 +3,7 @@ module Actions.Health where
 import Control.Lens
 import Control.Monad.State
 import Types
-
-recoveryTime :: Int
-recoveryTime = 10
+import Config
 
 hurtBy :: (HasHealth s, MonadState s m) => Float -> m ()
 hurtBy amt = do
@@ -17,4 +15,4 @@ hurtBy amt = do
 incTimeSinceHit :: (HasHealth s, MonadState s m) => m ()
 incTimeSinceHit = do
   v <- timeSinceHit <+= 1
-  when (v > 10) (shields %= min 1 . (+ 0.005))
+  when (v > shieldRecoveryTime) (shields %= min 1 . (+ shieldRecoveryAmount))

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ead9edb59715411db19b8c5ef7680736baedac6282d8ab1925b19b77530d2234
+-- hash: d0ef507a3c764924a4cf588eed1c09e93a5a876e4831aecbea25c3bd0d63a990
 
 name:           void-space
 version:        0.1.0.0
@@ -31,9 +31,11 @@ library
       Actions.Health
       Actions.Words
       App
+      Config
       Display.Attrs
       Display.Dashboard
       Display.Render
+      Display.Shield
       Display.Stars
       Display.Words
       Types

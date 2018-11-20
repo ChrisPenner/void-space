@@ -6,6 +6,7 @@ import           Brick.BChan
 import           Control.Monad
 
 import           App
+import           Config
 import           Control.Concurrent
 import           Control.Concurrent.Async
 import           Data.List.NonEmpty            as NE
@@ -40,4 +41,4 @@ millisecond = 1000
 timer :: BChan () -> IO ()
 timer bChan = forever $ do
   writeBChan bChan ()
-  threadDelay (200 * millisecond)
+  threadDelay (tickTimeMilliseconds * millisecond)

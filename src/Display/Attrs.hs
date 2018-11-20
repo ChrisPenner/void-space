@@ -28,6 +28,19 @@ redAttr = "red"
 cyanAttr :: AttrName
 cyanAttr = "cyan"
 
+yellowAttr :: AttrName
+yellowAttr = "yellow"
+
+magentaAttr :: AttrName
+magentaAttr = "magenta"
+
+greenAttr :: AttrName
+greenAttr = "green"
+
+blueAttr :: AttrName
+blueAttr = "blue"
+
+
 attrs :: AttrMap
 attrs =
   let mappings =
@@ -39,5 +52,9 @@ attrs =
         , (shipAttr    , defAttr `withForeColor` green)
         , (redAttr     , defAttr `withForeColor` red)
         , (cyanAttr    , defAttr `withForeColor` cyan)
+        , (yellowAttr  , defAttr `withForeColor` yellow)
+        , (greenAttr   , defAttr `withForeColor` green)
+        , (magentaAttr , defAttr `withForeColor` magenta)
+        , (blueAttr    , defAttr `withForeColor` blue)
         ]
   in  attrMap defAttr mappings

@@ -4,15 +4,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Actions.Enemy where
 
-import           Control.Monad.State
-import           Control.Lens                  as L
-import           Data.Monoid
-import           Control.Applicative
-import           System.Random
-import           Actions.Words
 import           Actions.Health
+import           Actions.Words
+import           Config
+import           Control.Applicative
+import           Control.Lens                  as L
+import           Control.Monad.State
+import           Data.Monoid
+import           System.Random
 import           Types
-import qualified Data.Text as T
+import qualified Data.Text                     as T
+
 
 corridorSize :: (HasArt s, MonadState s m) => m Int
 corridorSize = uses ship (length . T.lines)
@@ -22,9 +24,6 @@ stepEnemies = enemies . _Just . distance -= 1
 
 shouldSpawn :: (MonadIO m) => m Bool
 shouldSpawn = (<= spawnPercentage) <$> liftIO (randomRIO (0, 1))
- where
-  spawnPercentage :: Float
-  spawnPercentage = 0.3
 
 spawnEnemies
   :: (MonadIO m, HasWordStream s, HasEnemies s, HasArt s, MonadState s m)
@@ -44,7 +43,7 @@ newEnemy = do
   enemies . L.index loc %= addIfMissing loc newWord
  where
   addIfMissing loc w e =
-    e <|> Just Enemy {_row = loc, _distance = 50, _word = w}
+    e <|> Just Enemy {_row = loc, _distance = corridorWidth, _word = w}
 
 checkDamage :: (HasHealth s, HasEnemies s, MonadState s m) => m ()
 checkDamage = do
@@ -52,7 +51,7 @@ checkDamage = do
     enemies %%= \x -> if has (_Just . distance . filtered (<= 0)) x
       then (Sum 1 :: Sum Int, Nothing)
       else (Sum 0, x)
-  hurtBy (fromIntegral totalDamagingEnemies * 0.3)
+  hurtBy (fromIntegral totalDamagingEnemies * enemyDamage)
   when (totalDamagingEnemies > 0) $ timeSinceHit .= 0
 
 killEnemies :: (HasGameState s, HasEnemies s, MonadState s m) => m ()
