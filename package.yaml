@@ -29,14 +29,8 @@ dependencies:
 - text
 - random
 - streams
-- adjunctions
-- distributive
-- comonad
-- vector
-- vector-sized
 - finite-typelits
 - word-wrap
-- generic-lens
 
 library:
   source-dirs: src

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3ef63c087f096444ab7e9120b7faa736722d631a473d7f9fb30ef4908f6342e2
+-- hash: abdb0ee11b9d78264ef7d448a4a811c1c955e3db76015a5a88959710dc5a7563
 
 name:           void-space
 version:        0.1.0.0
@@ -46,21 +46,15 @@ library
       src
   default-extensions: StrictData TypeApplications DataKinds ViewPatterns FlexibleInstances FlexibleContexts DeriveFunctor DeriveTraversable
   build-depends:
-      adjunctions
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , brick
-    , comonad
     , containers
-    , distributive
     , finite-typelits
-    , generic-lens
     , lens
     , mtl
     , random
     , streams
     , text
-    , vector
-    , vector-sized
     , vty
     , word-wrap
   default-language: Haskell2010
@@ -73,22 +67,16 @@ executable void-space-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall
   build-depends:
-      adjunctions
-    , async
+      async
     , base >=4.7 && <5
     , brick
-    , comonad
     , containers
-    , distributive
     , finite-typelits
-    , generic-lens
     , lens
     , mtl
     , random
     , streams
     , text
-    , vector
-    , vector-sized
     , void-space
     , vty
     , word-wrap
@@ -103,21 +91,15 @@ test-suite void-space-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      adjunctions
-    , base >=4.7 && <5
+      base >=4.7 && <5
     , brick
-    , comonad
     , containers
-    , distributive
     , finite-typelits
-    , generic-lens
     , lens
     , mtl
     , random
     , streams
     , text
-    , vector
-    , vector-sized
     , void-space
     , vty
     , word-wrap
