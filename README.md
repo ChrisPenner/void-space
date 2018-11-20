@@ -17,6 +17,18 @@ See how many kills you can get before you asphyxiate in the cold dark void
 -   Customize `word-list.txt` or add your own space-ships and art in `./art`!
 -   Customize values in `src/Config.hs` to tweak difficulty!
 
+## Features
+
+-   [x] Super-awesome recharging shield tech to make the Space Federation proud.
+-   [x] Customizable art!
+-   [x] Auto-scaling (and customizable) difficulty
+-   [x] Super cool space background to impress all your friends (my mother was VERY impressed)
+-   [ ] Distributed Client/Server architecture for LAN play! Cuz you gotta have LAN
+        parties, how else am I supposed to get rid of all of these Doritos?
+-   [ ] Chaotic events!
+-   [ ] Powerups!
+-   [ ] Co-operative mode!
+
 ## Design Principles
 
 Unlike many fun games designed to help you learn Haskell, this one was
