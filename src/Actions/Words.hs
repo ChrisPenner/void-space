@@ -9,6 +9,7 @@ import Data.Stream.Infinite as S
 import Control.Monad.State
 import Control.Lens
 import Control.Applicative
+import Data.Function
 
 (<&&>) :: Applicative f => f Bool -> f Bool -> f Bool
 (<&&>) = liftA2 (&&)
@@ -16,7 +17,8 @@ import Control.Applicative
 anyStarted :: (HasWords s, MonadState s m) => m Bool
 anyStarted = gets $ anyOf (eachWord . typed) (not . T.null)
 
-typeChar :: (HasWords s, HasWordStream s, MonadState s m) => Char -> m ()
+typeChar
+  :: (HasWords s, HasEnemies s, HasWordStream s, MonadState s m) => Char -> m ()
 typeChar c = do
   anyStarted' <- anyStarted
   if anyStarted' then typeExisting c else startNew c
@@ -32,12 +34,15 @@ typeExisting c = do
     Nothing  -> return ()
     Just ind -> eachWord . index ind %= typeCharInWord c
 
-startNew :: (HasWords s, MonadState s m) => Char -> m ()
+startNew :: (HasWords s, HasEnemies s, MonadState s m) => Char -> m ()
 startNew c = do
   let doesMatch w = T.singleton c `T.isPrefixOf` _untyped w
-  firstMatchIndex <- gets
-    $ findOf (eachWord . withIndex) ((doesMatch <&&> (T.null . _typed)) . snd)
-  case firstMatchIndex of
+      checkEnemy e = doesMatch <&&> (T.null . _typed) $ _word e
+  matchingEnemies <- gets
+    $ toListOf (enemies . _Just . filtered checkEnemy . withIndex)
+  let closestIndex =
+        minimumByOf traversed (compare `on` _distance . snd) matchingEnemies
+  case closestIndex of
     Nothing       -> pure ()
     Just (ind, _) -> eachWord . index ind %= typeCharInWord c
 
