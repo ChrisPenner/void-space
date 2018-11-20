@@ -1,6 +1,6 @@
 # VOIDSPACE
 
-Yo dawg; I heard you like types, so I made a typing tutor where you can type your types!
+Yo dawg; I heard you like types, so I made a well-typed typing tutor where you can type your types... in SPACE!
 
 [![asciicast](https://asciinema.org/a/212931.svg)](https://asciinema.org/a/212931)
 
