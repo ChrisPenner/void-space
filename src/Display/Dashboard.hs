@@ -5,6 +5,7 @@ import Brick
 import Brick.Widgets.Border
 import Brick.Widgets.Border.Style
 import Brick.Widgets.ProgressBar
+import Brick.Widgets.Center
 import Control.Lens
 import Types
 import Display.Attrs
@@ -23,9 +24,10 @@ killCounter s =
   let scoreText = if (s ^. score) <= 0
         then T.singleton '-'
         else T.replicate (s ^. score) $ T.singleton 'x'
-  in  borderWithLabel (txt $ "Kills " <> T.pack (show (s ^. score)))
+  in  borderWithLabel (txt $ T.pack (show (s ^. score)) <> " Kills")
       . padRight Max
       . padLeft (Pad 1)
+      . hCenter
       . txtWrapWith
           (WrapSettings {preserveIndentation = False, breakLongWords = True})
       $ scoreText

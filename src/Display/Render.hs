@@ -43,7 +43,7 @@ drawGame :: GameState -> [Widget String]
 drawGame s = if s ^. hp <= 0
   then
     [ header
-    , hCenterLayer . vCenterLayer $ gameOverWidget s <=> hCenterLayer startOver
+    , hCenterLayer . vCenterLayer $ gameOverWidget s
     , stars
     , stars <=> dashboard s
     ]
@@ -55,9 +55,6 @@ drawGame s = if s ^. hp <= 0
 
 gameOverWidget :: GameState -> Widget String
 gameOverWidget s = withAttr redAttr . txt $ s ^. gameover
-
-startOver :: Widget String
-startOver = txt "press <space> to start over"
 
 drawEnemies :: GameState -> Int -> Widget String
 drawEnemies s sz = vBox $ foldMap (pure . widgetForRow) [0 .. sz]
