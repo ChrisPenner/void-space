@@ -1,15 +1,15 @@
-# void-space
+# VOIDSPACE
 
-[![asciicast](https://asciinema.org/a/1ClGLVEQuJOvn9eNiDdZ6epxX.svg)](https://asciinema.org/a/1ClGLVEQuJOvn9eNiDdZ6epxX)
+Yo dawg; I heard you like types, so I made a typing tutor where you can type your types!
 
-You can fight off words in outer-space with nothing but your keyboard :)
+[![asciicast](https://asciinema.org/a/212931.svg)](https://asciinema.org/a/212931)
 
-Also it's got a random star-field-generator so that's pretty cool.
+Fight off scary category-theory in outer-space with nothing but your trusty keyboard :)
 
 ## Usage
 
 -   Clone the repo
 -   `$ stack install`
 -   `$ void-space-exe` (from the root of the repo)
--   Customize `word-list.txt` or add your own space-ships and art!
+-   Customize `word-list.txt` or add your own space-ships and art in `./art`!
 -   Customize values in `src/Config.hs` to tweak difficulty!

@@ -24,10 +24,6 @@ loadArt =
     <*> TIO.readFile "./art/wormhole.txt"
     <*> TIO.readFile "./art/game-over.txt"
 
-
-baseTickTime :: Int
-baseTickTime = tickTime
-
 main :: IO ()
 main = do
   let loadVty = standardIOConfig >>= mkVty
@@ -47,5 +43,5 @@ timer multiplierVar bChan = forever $ do
   multiplier <- readMVar multiplierVar
   threadDelay
     . round @Float
-    $ fromIntegral baseTickTime
+    $ fromIntegral tickTime
     * (1 - (fromIntegral multiplier / 100))

@@ -42,6 +42,13 @@ library:
   source-dirs: src
   default-extensions: 
     - StrictData
+    - TypeApplications
+    - DataKinds
+    - ViewPatterns
+    - FlexibleInstances
+    - FlexibleContexts
+    - DeriveFunctor
+    - DeriveTraversable
 
 executables:
   void-space-exe:

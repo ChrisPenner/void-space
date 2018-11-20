@@ -24,7 +24,6 @@ app = App
   , appAttrMap      = const attrs
   }
 
-
 chooseCursor
   :: GameState
   -> [CursorLocation ResourceName]
@@ -35,7 +34,8 @@ handleEvent
   :: GameState
   -> BrickEvent ResourceName CustomEvent
   -> EventM ResourceName (Next GameState)
-handleEvent s (VtyEvent (EvKey (KChar 'c') [MCtrl])) = halt s
+handleEvent s (VtyEvent (EvKey    (KChar 'c') [MCtrl])) = halt s
+handleEvent s (VtyEvent (EvResize _           _      )) = invalidateCache >> continue s
 handleEvent s e = if s ^. hp <= 0
   then case e of
     VtyEvent (EvKey (KChar ' ') []) -> resetGameState s >>= continue

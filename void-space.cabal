@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b45db74bf9b37f4d263a37eefeb3347ab8bea0ab9f52180760ff5c8830349cc6
+-- hash: 3ef63c087f096444ab7e9120b7faa736722d631a473d7f9fb30ef4908f6342e2
 
 name:           void-space
 version:        0.1.0.0
@@ -44,7 +44,7 @@ library
       Paths_void_space
   hs-source-dirs:
       src
-  default-extensions: StrictData
+  default-extensions: StrictData TypeApplications DataKinds ViewPatterns FlexibleInstances FlexibleContexts DeriveFunctor DeriveTraversable
   build-depends:
       adjunctions
     , base >=4.7 && <5
