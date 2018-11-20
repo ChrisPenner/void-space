@@ -37,7 +37,7 @@ typeExisting c = do
 startNew :: (HasWords s, HasEnemies s, MonadState s m) => Char -> m ()
 startNew c = do
   let doesMatch w = T.singleton c `T.isPrefixOf` _untyped w
-      checkEnemy e = doesMatch <&&> (T.null . _typed) $ _word e
+      checkEnemy (_word -> w) = doesMatch <&&> (T.null . _typed) $ w
   matchingEnemies <- gets
     $ toListOf (enemies . _Just . filtered checkEnemy . withIndex)
   let closestIndex =
